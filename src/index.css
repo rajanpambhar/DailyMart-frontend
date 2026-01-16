@@ -272,3 +272,112 @@ a:hover {
     }
   }
 }
+
+/* =====================================================
+   PRINT STYLES - Custom Receipt Layout
+   ===================================================== */
+
+/* Hide receipt on screen */
+.print-receipt {
+  display: none;
+}
+
+/* Show receipt when printing */
+@media print {
+
+  /* Page setup */
+  @page {
+    size: A4;
+    margin: 0.5cm;
+  }
+
+  /* Constrain body to prevent extra pages */
+  html,
+  body {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Hide EVERYTHING first */
+  body * {
+    visibility: hidden;
+    max-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Show ONLY print-receipt and its children */
+  .print-receipt,
+  .print-receipt * {
+    visibility: visible;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Position receipt */
+  .print-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    display: block !important;
+    padding: 15px;
+  }
+
+  /* Reset positioning for receipt children */
+  .print-receipt * {
+    position: static !important;
+  }
+
+  /* Ensure black text */
+  .print-receipt * {
+    color: #000 !important;
+  }
+
+  /* Table styling */
+  .print-receipt table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .print-receipt th,
+  .print-receipt td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+
+  .print-receipt th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Light backgrounds */
+  .print-receipt .bg-gray-50,
+  .print-receipt .bg-gray-100 {
+    background-color: #f9f9f9;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* No shadows */
+  .print-receipt * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Page breaks */
+  .print-receipt tr {
+    page-break-inside: avoid;
+  }
+
+  .print-receipt h1,
+  .print-receipt h2,
+  .print-receipt h3 {
+    page-break-after: avoid;
+  }
+}

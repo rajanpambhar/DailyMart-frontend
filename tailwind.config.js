@@ -55,12 +55,12 @@ export default {
                 'slide-down': 'slideDown 0.3s ease-out',
                 'scale-in': 'scaleIn 0.2s ease-out',
                 'spin-slow': 'spin 3s linear infinite',
-                'typewriter': 'typewriter 2s steps(40) 1s 1 normal both',
+                'typewriter': 'typewriter 1s steps(40) 0.2s 1 normal both',
             },
             keyframes: {
                 typewriter: {
-                    '0%': { width: '0%' },
-                    '100%': { width: '100%' },
+                    '0%': { width: '0ch' },
+                    '100%': { width: '12ch' },
                 },
                 fadeIn: {
                     '0%': { opacity: '0' },

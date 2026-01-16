@@ -62,10 +62,10 @@ const HomePage = () => {
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
       const scrollAmount = 350; // Card width + gap
-      const newScrollLeft = direction === 'left' 
-        ? scrollContainerRef.current.scrollLeft - scrollAmount 
+      const newScrollLeft = direction === 'left'
+        ? scrollContainerRef.current.scrollLeft - scrollAmount
         : scrollContainerRef.current.scrollLeft + scrollAmount;
-      
+
       scrollContainerRef.current.scrollTo({
         left: newScrollLeft,
         behavior: 'smooth'
@@ -137,7 +137,7 @@ const HomePage = () => {
 
       {/* Best Selling Section */}
       <section className="py-16 bg-dark-800">
-        <div 
+        <div
           className="container relative group/carousel"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
@@ -159,7 +159,7 @@ const HomePage = () => {
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
-          
+
           <button
             onClick={() => scroll('right')}
             className="absolute right-0 top-[60%] -translate-y-1/2 translate-x-4 z-10 w-12 h-12 bg-dark-700/80 backdrop-blur-sm border border-dark-600 rounded-full flex items-center justify-center text-white opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-primary-500 hover:text-dark-900 shadow-xl"
@@ -175,7 +175,7 @@ const HomePage = () => {
               ))}
             </div>
           ) : (
-            <div 
+            <div
               ref={scrollContainerRef}
               className="flex gap-6 overflow-x-auto no-scrollbar py-4 -mx-4 px-4"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
