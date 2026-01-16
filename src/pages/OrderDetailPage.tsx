@@ -101,11 +101,11 @@ const OrderDetailPage = () => {
   const tax = 0; // You can add tax calculation
 
   return (
-    <div className="min-h-screen bg-dark-900 py-8">
+    <div className="min-h-screen bg-dark-900 py-6">
       <div className="container animate-fade-in">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
               <Link
                 to="/orders"
@@ -114,11 +114,11 @@ const OrderDetailPage = () => {
                 <ArrowLeft className="w-5 h-5" />
               </Link>
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-white flex items-center gap-3">
-                  <Hash className="w-8 h-8 text-primary-500" />
+                <h1 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
+                  <Hash className="w-6 h-6 text-primary-500" />
                   Order {order.id}
                 </h1>
-                <p className="text-gray-400 flex items-center gap-2 mt-1">
+                <p className="text-sm text-gray-400 flex items-center gap-2 mt-1">
                   <Calendar className="w-4 h-4" />
                   Placed on {new Date(order.orderDate).toLocaleDateString('en-US', {
                     weekday: 'long',
@@ -139,11 +139,11 @@ const OrderDetailPage = () => {
           </div>
 
           {/* Status Banner */}
-          <div className="glass-card p-6 bg-gradient-to-r from-primary-500/10 to-secondary-400/10 border-primary-500/30">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-primary-500/20 flex items-center justify-center flex-shrink-0">
-                  <PaymentIcon className="w-6 h-6 text-primary-400" />
+          <div className="glass-card p-4 bg-gradient-to-r from-primary-500/10 to-secondary-400/10 border-primary-500/30">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary-500/20 flex items-center justify-center flex-shrink-0">
+                  <PaymentIcon className="w-5 h-5 text-primary-400" />
                 </div>
                 <div className="flex-1">
                   <p className="text-sm text-gray-400 mb-1">Payment Status</p>
@@ -171,12 +171,12 @@ const OrderDetailPage = () => {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6">
           {/* Order Items */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="glass-card p-6 md:p-8 hover:border-primary-500/30 transition-colors">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+          <div className="lg:col-span-2 space-y-4">
+            <div className="glass-card p-4 md:p-5 hover:border-primary-500/30 transition-colors">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
                   <Package className="w-6 h-6 text-primary-500" />
                   Order Items
                 </h2>
@@ -185,13 +185,13 @@ const OrderDetailPage = () => {
                 </span>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {order.orderItems.map((item, index) => (
                   <div
                     key={item.id}
-                    className="group flex items-center gap-4 p-4 bg-dark-600/30 hover:bg-dark-600/60 rounded-xl transition-all duration-300 border border-transparent hover:border-primary-500/20"
+                    className="group flex items-center gap-2 p-2 bg-dark-600/30 hover:bg-dark-600/60 rounded-lg transition-all duration-300 border border-transparent hover:border-primary-500/20"
                   >
-                    <div className="relative w-20 h-20 bg-dark-700 rounded-xl overflow-hidden flex-shrink-0 ring-2 ring-dark-500 group-hover:ring-primary-500/50 transition-all">
+                    <div className="relative w-12 h-12 bg-dark-700 rounded-md overflow-hidden flex-shrink-0 ring-1 ring-dark-500 group-hover:ring-primary-500/50 transition-all">
                       {item.product?.image ? (
                         <img
                           src={item.product.image}
@@ -200,27 +200,27 @@ const OrderDetailPage = () => {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-500">
-                          <Package className="w-10 h-10" />
+                          <Package className="w-6 h-6" />
                         </div>
                       )}
-                      <div className="absolute top-1 right-1 w-6 h-6 bg-primary-500 text-dark-900 rounded-full flex items-center justify-center text-xs font-bold">
+                      <div className="absolute top-0.5 right-0.5 w-4 h-4 bg-primary-500 text-dark-900 rounded-full flex items-center justify-center text-[10px] font-bold">
                         {index + 1}
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-white text-lg mb-1 truncate group-hover:text-primary-400 transition-colors">
+                      <h3 className="font-semibold text-white text-sm mb-0.5 truncate group-hover:text-primary-400 transition-colors">
                         {item.product?.name || 'Product'}
                       </h3>
-                      <div className="flex items-center gap-3 text-sm text-gray-400">
+                      <div className="flex items-center gap-2 text-xs text-gray-400">
                         <span className="font-medium">₹{Number(item.price).toFixed(2)}</span>
                         <span className="text-gray-600">×</span>
-                        <span className="px-2 py-0.5 bg-dark-700 rounded-md font-medium">
+                        <span className="px-1.5 py-0.5 bg-dark-700 rounded text-[11px] font-medium">
                           Qty: {item.quantity}
                         </span>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-xl font-bold text-primary-400">
+                      <p className="text-base font-bold text-primary-400">
                         ₹{Number(item.subtotal).toFixed(2)}
                       </p>
                     </div>
@@ -229,7 +229,7 @@ const OrderDetailPage = () => {
               </div>
 
               {/* Order Summary */}
-              <div className="border-t border-dark-500 mt-8 pt-6 space-y-3">
+              <div className="border-t border-dark-500 mt-6 pt-4 space-y-2">
                 <div className="flex justify-between items-center text-gray-400">
                   <span>Subtotal</span>
                   <span className="font-semibold">₹{Number(subtotal).toFixed(2)}</span>
@@ -242,10 +242,10 @@ const OrderDetailPage = () => {
                   <span>Tax</span>
                   <span className="font-semibold">₹{Number(tax).toFixed(2)}</span>
                 </div>
-                <div className="border-t border-dark-500 pt-3 mt-3">
+                <div className="border-t border-dark-500 pt-2 mt-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-xl font-bold text-white">Total Amount</span>
-                    <span className="text-3xl font-bold text-gradient">
+                    <span className="text-lg font-bold text-white">Total Amount</span>
+                    <span className="text-2xl font-bold text-gradient">
                       ₹{Number(order.totalAmount).toFixed(2)}
                     </span>
                   </div>
@@ -255,36 +255,36 @@ const OrderDetailPage = () => {
           </div>
 
           {/* Order Info Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Payment Info */}
-            <div className="glass-card p-6 hover:border-primary-500/30 transition-colors">
-              <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <div className="glass-card p-4 hover:border-primary-500/30 transition-colors">
+              <h2 className="text-base font-bold text-white mb-3 flex items-center gap-2">
                 <div className="w-8 h-8 bg-primary-500/20 rounded-lg flex items-center justify-center">
                   <CreditCard className="w-5 h-5 text-primary-500" />
                 </div>
                 Payment Method
               </h2>
-              <div className="bg-dark-600/50 rounded-lg p-4 border border-dark-500">
-                <p className="text-white font-semibold capitalize">
+              <div className="bg-dark-600/50 rounded-lg p-3 border border-dark-500">
+                <p className="text-white font-semibold capitalize text-sm">
                   {order.paymentMethod.replace('_', ' ')}
                 </p>
               </div>
             </div>
 
             {/* Shipping Info */}
-            <div className="glass-card p-6 hover:border-primary-500/30 transition-colors">
-              <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <div className="glass-card p-4 hover:border-primary-500/30 transition-colors">
+              <h2 className="text-base font-bold text-white mb-3 flex items-center gap-2">
                 <div className="w-8 h-8 bg-secondary-400/20 rounded-lg flex items-center justify-center">
                   <Truck className="w-5 h-5 text-secondary-400" />
                 </div>
                 Shipping Details
               </h2>
-              <div className="space-y-4">
-                <div className="flex items-start gap-3 p-3 bg-dark-600/30 rounded-lg">
-                  <User className="w-5 h-5 text-primary-500 mt-0.5 flex-shrink-0" />
+              <div className="space-y-3">
+                <div className="flex items-start gap-2 p-2.5 bg-dark-600/30 rounded-lg">
+                  <User className="w-4 h-4 text-primary-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">Customer Name</p>
-                    <p className="text-white font-medium">{order.shippingName}</p>
+                    <p className="text-xs text-gray-500 mb-0.5">Customer Name</p>
+                    <p className="text-white font-medium text-sm">{order.shippingName}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3 p-3 bg-dark-600/30 rounded-lg">
@@ -305,8 +305,8 @@ const OrderDetailPage = () => {
             </div>
 
             {/* Need Help Card */}
-            <div className="glass-card p-6 bg-gradient-to-br from-primary-500/10 to-secondary-400/10 border-primary-500/30">
-              <h3 className="text-lg font-bold text-white mb-2">Need Help?</h3>
+            <div className="glass-card p-4 bg-gradient-to-br from-primary-500/10 to-secondary-400/10 border-primary-500/30">
+              <h3 className="text-base font-bold text-white mb-2">Need Help?</h3>
               <p className="text-sm text-gray-400 mb-4">
                 Contact our support team for any questions about your order.
               </p>

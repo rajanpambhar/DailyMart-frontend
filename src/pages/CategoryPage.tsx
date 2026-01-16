@@ -31,7 +31,7 @@ const CategoryPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       if (!slug) return;
-      
+
       setLoading(true);
       try {
         const data = await productsApi.getByCategory(slug);
@@ -86,10 +86,10 @@ const CategoryPage = () => {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
           {products.map((product, i) => (
-            <div 
-              key={product.id} 
+            <div
+              key={product.id}
               className="animate-slide-up"
               style={{ animationDelay: `${i * 50}ms` }}
             >

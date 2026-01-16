@@ -64,75 +64,87 @@ const OrdersPage = () => {
 
   return (
     <div className="container py-8 animate-fade-in">
-      <h1 className="text-3xl font-bold text-white mb-8">My Orders</h1>
+      <h1 className="text-3xl font-bold text-white mb-6">My Orders</h1>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {orders.map((order) => (
-          <div key={order.id} className="glass-card p-6">
-            <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-              <div>
-                <p className="text-sm text-gray-400 mb-1">Order ID</p>
-                <p className="font-bold text-white">#{order.id}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-400 mb-1">Date</p>
-                <p className="text-white flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
-                  {new Date(order.orderDate).toLocaleDateString()}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-400 mb-1">Total</p>
-                <p className="font-bold text-primary-500">₹{Number(order.totalAmount).toFixed(2)}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-400 mb-1">Payment</p>
-                <span className={`badge ${statusColors[order.paymentStatus]}`}>
-                  {order.paymentStatus}
-                </span>
-              </div>
-              <div>
-                <p className="text-sm text-gray-400 mb-1">Delivery</p>
-                <span className={`badge ${statusColors[order.deliveryStatus]}`}>
-                  {order.deliveryStatus}
-                </span>
-              </div>
-              <Link
-                to={`/orders/${order.id}`}
-                className="btn-secondary py-2"
-              >
-                <Eye className="w-4 h-4" />
-                View Details
-              </Link>
-            </div>
+          <div key={order.id} className="glass-card p-4 hover:shadow-lg transition-all">
+            <div className="flex items-center justify-between gap-3">
+              {/* Left: Order Info */}
+              <div className="flex items-center gap-4 flex-1 min-w-0">
+                {/* Order ID & Date */}
+                <div className="flex-shrink-0">
+                  <p className="text-xs text-gray-400">Order ID</p>
+                  <p className="font-semibold text-white text-sm">#{order.id.slice(0, 10)}</p>
+                  <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                    <Calendar className="w-3 h-3" />
+                    {new Date(order.orderDate).toLocaleDateString()}
+                  </p>
+                </div>
 
-            {/* Order Items Preview */}
-            <div className="border-t border-dark-500 pt-4">
-              <div className="flex items-center gap-3 overflow-x-auto pb-2">
-                {order.orderItems.slice(0, 5).map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex-shrink-0 w-12 h-12 bg-dark-600 rounded-lg overflow-hidden"
-                    title={item.product?.name}
-                  >
-                    {item.product?.image ? (
-                      <img
-                        src={item.product.image}
-                        alt={item.product.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-500">
-                        <Package className="w-6 h-6" />
+                {/* Product Thumbnails */}
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  <div className="flex items-center gap-2 overflow-x-auto">
+                    {order.orderItems.slice(0, 4).map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex-shrink-0 w-12 h-12 bg-dark-600 rounded-md overflow-hidden ring-1 ring-dark-500"
+                        title={item.product?.name}
+                      >
+                        {item.product?.image ? (
+                          <img
+                            src={item.product.image}
+                            alt={item.product.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-500">
+                            <Package className="w-5 h-5" />
+                          </div>
+                        )}
                       </div>
+                    ))}
+                    {order.orderItems.length > 4 && (
+                      <span className="text-gray-400 text-xs whitespace-nowrap">
+                        +{order.orderItems.length - 4}
+                      </span>
                     )}
                   </div>
-                ))}
-                {order.orderItems.length > 5 && (
-                  <span className="text-gray-400 text-sm">
-                    +{order.orderItems.length - 5} more
+                </div>
+              </div>
+
+              {/* Right: Status & Actions */}
+              <div className="flex items-center gap-3 flex-shrink-0">
+                {/* Total */}
+                <div className="text-right">
+                  <p className="text-xs text-gray-400">Total</p>
+                  <p className="font-bold text-primary-500 text-lg">₹{Number(order.totalAmount).toFixed(2)}</p>
+                </div>
+
+                {/* Payment Status */}
+                <div className="text-center min-w-[85px]">
+                  <p className="text-xs text-gray-400 mb-1">Payment</p>
+                  <span className={`badge text-xs ${statusColors[order.paymentStatus]}`}>
+                    {order.paymentStatus}
                   </span>
-                )}
+                </div>
+
+                {/* Delivery Status */}
+                <div className="text-center min-w-[85px]">
+                  <p className="text-xs text-gray-400 mb-1">Delivery</p>
+                  <span className={`badge text-xs ${statusColors[order.deliveryStatus]}`}>
+                    {order.deliveryStatus}
+                  </span>
+                </div>
+
+                {/* View Button */}
+                <Link
+                  to={`/orders/${order.id}`}
+                  className="btn-secondary py-2 px-4 text-sm flex-shrink-0"
+                >
+                  <Eye className="w-4 h-4" />
+                  View Details
+                </Link>
               </div>
             </div>
           </div>
