@@ -11,6 +11,7 @@ import HomePage from './pages/HomePage';
 import CategoryPage from './pages/CategoryPage';
 import ProductPage from './pages/ProductPage';
 import PromotionPage from './pages/PromotionPage';
+import AllProductsPage from './pages/AllProductsPage';
 
 // Auth Pages
 import LoginPage from './pages/auth/LoginPage';
@@ -52,6 +53,7 @@ function App() {
       <Route element={<MainLayout />}>
         {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
+        <Route path="/products" element={<AllProductsPage />} />
         <Route path="/promotions" element={<PromotionPage />} />
         <Route path="/category/:slug" element={<CategoryPage />} />
         <Route path="/product/:id" element={<ProductPage />} />

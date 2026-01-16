@@ -146,7 +146,7 @@ const HomePage = () => {
             <h2 className="text-2xl md:text-3xl font-bold text-white">
               Best Selling Products
             </h2>
-            <Link to="/category/vegetables" className="btn-ghost text-primary-500">
+            <Link to="/products" className="btn-ghost text-primary-500">
               View All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

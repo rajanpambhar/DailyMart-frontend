@@ -50,6 +50,18 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1">
+            <NavLink
+              to="/products"
+              className={({ isActive }) =>
+                `px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  isActive
+                    ? 'text-primary-500 bg-primary-500/10'
+                    : 'text-gray-300 hover:text-white hover:bg-dark-600'
+                }`
+              }
+            >
+              All Products
+            </NavLink>
             {categories.map((cat) => (
               <NavLink
                 key={cat.slug}
@@ -171,6 +183,19 @@ const Header = () => {
         {isMenuOpen && (
           <nav className="lg:hidden py-4 border-t border-dark-600 animate-slide-down">
             <div className="grid grid-cols-2 gap-2">
+              <NavLink
+                to="/products"
+                onClick={() => setIsMenuOpen(false)}
+                className={({ isActive }) =>
+                  `px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                    isActive
+                      ? 'text-primary-500 bg-primary-500/10'
+                      : 'text-gray-300 hover:text-white bg-dark-700'
+                  }`
+                }
+              >
+                All Products
+              </NavLink>
               {categories.map((cat) => (
                 <NavLink
                   key={cat.slug}
