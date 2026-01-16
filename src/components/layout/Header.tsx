@@ -8,6 +8,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Menu, X, ShoppingCart, User, LogOut, Settings, ChevronDown } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { useCartStore } from '../../stores/cartStore';
+import Logo from '../common/Logo';
 
 const categories = [
   { slug: 'vegetables', label: 'Vegetables' },
@@ -39,9 +40,12 @@ const Header = () => {
       <div className="container">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-1 text-2xl font-bold">
-            <span className="text-primary-500">Daily</span>
-            <span className="text-secondary-400">Mart</span>
+          <Link to="/" className="flex items-center gap-2 text-2xl font-bold group">
+            <Logo className="w-8 h-8 group-hover:scale-110 transition-transform duration-200" />
+            <div className="flex items-baseline">
+              <span className="text-primary-500">Daily</span>
+              <span className="text-secondary-400">Mart</span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}

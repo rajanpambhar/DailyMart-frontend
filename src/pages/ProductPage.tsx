@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShoppingCart, Plus, Minus, Loader2 } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Plus, Minus, Loader2, Leaf, CheckCircle, Truck, ShieldCheck } from 'lucide-react';
 import { productsApi } from '../services';
 import { Product } from '../types';
 import { useCartStore } from '../stores/cartStore';
@@ -81,23 +81,34 @@ const ProductPage = () => {
   return (
     <div className="container py-8 animate-fade-in">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
-        <Link to="/" className="hover:text-primary-500">Home</Link>
-        <span>/</span>
+      {/* Breadcrumb & Navigation */}
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-2 text-sm text-gray-400">
+          <Link to="/" className="hover:text-primary-500 transition-colors">Home</Link>
+          <span>/</span>
+          <Link
+            to={`/category/${product.categorySlug}`}
+            className="hover:text-primary-500 transition-colors"
+          >
+            {product.category?.name || product.categorySlug}
+          </Link>
+          <span>/</span>
+          <span className="text-white truncate">{product.name}</span>
+        </div>
+
         <Link
           to={`/category/${product.categorySlug}`}
-          className="hover:text-primary-500"
+          className="btn-ghost inline-flex text-sm py-2 px-4 bg-dark-600/50 hover:bg-dark-600 border border-dark-500 rounded-lg transition-colors"
         >
-          {product.category?.name || product.categorySlug}
+          <ArrowLeft className="w-4 h-4" />
+          Back to {product.category?.name || 'Category'}
         </Link>
-        <span>/</span>
-        <span className="text-white truncate">{product.name}</span>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-12">
-        {/* Product Image */}
-        <div className="glass-card p-8 animate-scale-in">
-          <div className="aspect-square bg-dark-600 rounded-xl overflow-hidden image-zoom">
+      <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        {/* Product Image - Constrained & Centered */}
+        <div className="lg:col-span-4 glass-card p-6 animate-scale-in max-w-sm mx-auto w-full">
+          <div className="aspect-square rounded-xl overflow-hidden image-zoom">
             {product.image ? (
               <img
                 src={product.image}
@@ -112,85 +123,149 @@ const ProductPage = () => {
           </div>
         </div>
 
-        {/* Product Info */}
-        <div className="space-y-6 animate-slide-up">
-          {product.isBestSelling && (
-            <span className="badge badge-success animate-float">Best Seller</span>
-          )}
-          
-          <h1 className="text-3xl font-bold text-white">{product.name}</h1>
-          
-          <div className="flex items-baseline gap-3">
-            <span className="text-3xl font-bold text-primary-500">
-              ₹{product.price.toFixed(2)}
-            </span>
-            {(product.slashedPrice || 0) > 0 && (
-              <span className="text-xl text-gray-500 line-through">
-                ₹{product.slashedPrice!.toFixed(2)}
-              </span>
-            )}
-          </div>
-
-          {product.description && (
-            <p className="text-gray-400 leading-relaxed">{product.description}</p>
-          )}
-
-          <div className="py-4 border-t border-dark-500">
-            <p className="text-sm text-gray-400 mb-2">Stock Status</p>
-            {isOutOfStock ? (
-              <span className="badge badge-error">Out of Stock</span>
-            ) : (
-              <span className="badge badge-success">{product.stockQuantity} in stock</span>
-            )}
-          </div>
-
-          {!isOutOfStock && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <span className="text-gray-400">Quantity:</span>
-                <div className="flex items-center bg-dark-600 rounded-lg">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="p-3 text-gray-400 hover:text-white transition-colors"
-                  >
-                    <Minus className="w-5 h-5" />
-                  </button>
-                  <span className="w-12 text-center text-white font-medium">
-                    {quantity}
-                  </span>
-                  <button
-                    onClick={() => setQuantity(Math.min(product.stockQuantity, quantity + 1))}
-                    className="p-3 text-gray-400 hover:text-white transition-colors"
-                  >
-                    <Plus className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-
-              <button
-                onClick={handleAddToCart}
-                disabled={isAdding}
-                className="btn-primary w-full lg:w-auto glass-shine"
-              >
-                {isAdding ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <>
-                    <ShoppingCart className="w-5 h-5" />
-                    Add to Cart
-                  </>
+        {/* Product Info - Reordered Layout */}
+        <div className="lg:col-span-8 space-y-8 animate-slide-up">
+          {/* 1. Header Section: Title, Price, Status */}
+          <div className="space-y-4">
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-2">
+                {product.isBestSelling && (
+                  <span className="badge badge-success mb-2 inline-block">Best Seller</span>
                 )}
-              </button>
+                <h1 className="text-4xl font-bold text-white leading-tight">{product.name}</h1>
+              </div>
+              <div className="text-right">
+                 {isOutOfStock ? (
+                  <span className="badge badge-error">Out of Stock</span>
+                ) : (
+                  <span className="badge badge-success">{product.stockQuantity} in stock</span>
+                )}
+              </div>
+            </div>
+            
+            <div className="flex items-baseline gap-3">
+              <span className="text-4xl font-bold text-primary-500">
+                ₹{product.price.toFixed(2)}
+              </span>
+              {(product.slashedPrice || 0) > 0 && (
+                <span className="text-2xl text-gray-500 line-through">
+                  ₹{product.slashedPrice!.toFixed(2)}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* 2. Actions Section - Moved Up */}
+          {!isOutOfStock && (
+            <div className="py-2">
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-4">
+                  <span className="text-gray-400 text-sm font-medium">Quantity</span>
+                  <div className="flex items-center bg-dark-600 rounded-lg h-10 border border-dark-500">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="w-10 h-full flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+                    >
+                      <Minus className="w-4 h-4" />
+                    </button>
+                    <span className="w-10 text-center text-white font-medium text-sm border-x border-dark-500/50">
+                      {quantity}
+                    </span>
+                    <button
+                      onClick={() => setQuantity(Math.min(product.stockQuantity, quantity + 1))}
+                      className="w-10 h-full flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="h-10 w-px bg-dark-600 hidden sm:block"></div>
+
+                <button
+                  onClick={handleAddToCart}
+                  disabled={isAdding}
+                  className="btn-primary flex-1 sm:flex-none glass-shine h-10 px-8 text-sm font-semibold tracking-wide"
+                >
+                  {isAdding ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <ShoppingCart className="w-4 h-4" />
+                      Add to Cart
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           )}
 
-          <Link
-            to={`/category/${product.categorySlug}`}
-            className="btn-ghost inline-flex"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Back to {product.category?.name || 'Category'}
-          </Link>
+          {/* 3. Description Section */}
+          <div className="space-y-6 pt-2 border-t border-dark-600">
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-2">Description</h3>
+               {product.description ? (
+                <p className="text-gray-400 leading-relaxed text-sm">{product.description}</p>
+              ) : (
+                <p className="text-gray-500 italic text-sm">No specific description available for this product.</p>
+              )}
+            </div>
+            
+            <div className="bg-dark-600/50 rounded-xl p-4 border border-dark-500">
+              <p className="text-primary-400 font-medium mb-1 flex items-center gap-2 text-sm">
+                <Leaf className="w-4 h-4" />
+                Freshness Guaranteed
+              </p>
+              <p className="text-gray-300 text-sm">
+                Our products are sourced fresh daily and undergo rigorous quality checks. 
+                We ensure that this product is of the highest quality, hand-picked for you.
+                Experience the difference of premium selection with every order.
+              </p>
+            </div>
+          </div>
+
+          {/* 4. Key Features Grid - Restored */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-6 border-t border-dark-600">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-primary-500/10 text-primary-500 shrink-0">
+                <Leaf className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-medium text-white text-sm">100% Organic Sources</h4>
+                <p className="text-xs text-gray-400 mt-0.5">Sourced from certified organic farms.</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-primary-500/10 text-primary-500 shrink-0">
+                <CheckCircle className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-medium text-white text-sm">Quality Checked</h4>
+                <p className="text-xs text-gray-400 mt-0.5">Verified for quality before dispatch.</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-primary-500/10 text-primary-500 shrink-0">
+                <Truck className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-medium text-white text-sm">Fast Delivery</h4>
+                <p className="text-xs text-gray-400 mt-0.5">Same day delivery available in select areas.</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-primary-500/10 text-primary-500 shrink-0">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-medium text-white text-sm">Secure Packaging</h4>
+                <p className="text-xs text-gray-400 mt-0.5">Hygienic and safe packaging guaranteed.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

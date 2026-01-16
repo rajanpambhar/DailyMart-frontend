@@ -26,7 +26,14 @@ const ProductCard = ({ product, compact = false }: ProductCardProps) => {
   const inCart = !!cartItem;
   const isOutOfStock = product.stockQuantity <= 0;
 
-  const handleAddToCart = async () => {
+  const handleCardClick = () => {
+    navigate(`/product/${product.id}`);
+  };
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    
     if (!isAuthenticated) {
       navigate('/login');
       return;
@@ -50,7 +57,10 @@ const ProductCard = ({ product, compact = false }: ProductCardProps) => {
 
   if (compact) {
     return (
-      <div className="product-card group">
+      <div 
+        className="product-card group cursor-pointer" 
+        onClick={handleCardClick}
+      >
         <div className="relative aspect-square mb-2 overflow-hidden rounded-lg bg-dark-600">
           {product.image ? (
             <img
@@ -90,7 +100,10 @@ const ProductCard = ({ product, compact = false }: ProductCardProps) => {
   }
 
   return (
-    <div className="product-card">
+    <div 
+      className="product-card cursor-pointer" 
+      onClick={handleCardClick}
+    >
       <div className="relative aspect-square mb-3 overflow-hidden rounded-xl bg-dark-600">
         {product.image ? (
           <img
@@ -126,10 +139,10 @@ const ProductCard = ({ product, compact = false }: ProductCardProps) => {
         </div>
 
         {!isOutOfStock && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center bg-dark-600 rounded-lg h-8">
               <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                onClick={(e) => { e.stopPropagation(); setQuantity(Math.max(1, quantity - 1)); }}
                 className="w-7 h-full flex items-center justify-center text-gray-400 hover:text-white transition-colors"
                 type="button"
               >
@@ -137,7 +150,7 @@ const ProductCard = ({ product, compact = false }: ProductCardProps) => {
               </button>
               <span className="w-6 text-center text-white font-medium text-xs">{quantity}</span>
               <button
-                onClick={() => setQuantity(Math.min(product.stockQuantity, quantity + 1))}
+                onClick={(e) => { e.stopPropagation(); setQuantity(Math.min(product.stockQuantity, quantity + 1)); }}
                 className="w-7 h-full flex items-center justify-center text-gray-400 hover:text-white transition-colors"
                 type="button"
               >

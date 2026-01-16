@@ -5,6 +5,7 @@
 
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import Logo from '../common/Logo';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -15,9 +16,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Section */}
           <div>
-            <Link to="/" className="flex items-center gap-1 text-2xl font-bold mb-4">
-              <span className="text-primary-500">Daily</span>
-              <span className="text-secondary-400">Mart</span>
+            <Link to="/" className="flex items-center gap-2 text-2xl font-bold mb-4 group">
+              <Logo className="w-8 h-8 group-hover:scale-110 transition-transform duration-200" />
+              <div className="flex items-baseline">
+                <span className="text-primary-500">Daily</span>
+                <span className="text-secondary-400">Mart</span>
+              </div>
             </Link>
             <p className="text-gray-400 mb-6">
               Your modern supermarket. Fresh groceries, curated fashion and gadgets. Shop smarter, live better.
