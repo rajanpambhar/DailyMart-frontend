@@ -10,6 +10,7 @@ import AuthLayout from './components/layout/AuthLayout';
 import HomePage from './pages/HomePage';
 import CategoryPage from './pages/CategoryPage';
 import ProductPage from './pages/ProductPage';
+import PromotionPage from './pages/PromotionPage';
 
 // Auth Pages
 import LoginPage from './pages/auth/LoginPage';
@@ -51,6 +52,7 @@ function App() {
       <Route element={<MainLayout />}>
         {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
+        <Route path="/promotions" element={<PromotionPage />} />
         <Route path="/category/:slug" element={<CategoryPage />} />
         <Route path="/product/:id" element={<ProductPage />} />
         

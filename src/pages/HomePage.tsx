@@ -200,7 +200,7 @@ const HomePage = () => {
             <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
               Enjoy exclusive deals and offers on DailyMart! Get up to 50% off on selected items.
             </p>
-            <Link to="/category/mens-clothing" className="btn-primary">
+            <Link to="/promotions" className="btn-primary">
               Shop Now
               <ArrowRight className="w-5 h-5" />
             </Link>

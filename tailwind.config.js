@@ -56,8 +56,13 @@ export default {
                 'scale-in': 'scaleIn 0.2s ease-out',
                 'spin-slow': 'spin 3s linear infinite',
                 'typewriter': 'typewriter 1s steps(40) 0.2s 1 normal both',
+                'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
             },
             keyframes: {
+                fadeInUp: {
+                    '0%': { transform: 'translateY(20px)', opacity: '0' },
+                    '100%': { transform: 'translateY(0)', opacity: '1' },
+                },
                 typewriter: {
                     '0%': { width: '0ch' },
                     '100%': { width: '12ch' },
