@@ -5,10 +5,12 @@
 
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Menu, X, ShoppingCart, User, LogOut, Settings, ChevronDown, Heart } from 'lucide-react';
+import { Menu, X, ShoppingCart, User, LogOut, Settings, ChevronDown, MapPin, Heart } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { useCartStore } from '../../stores/cartStore';
 import { useWishlistStore } from '../../stores/wishlistStore';
+import { addressesApi } from '../../services';
+import type { Address } from '../../services/addressesApi';
 import Logo from '../common/Logo';
 
 const categories = [
@@ -25,6 +27,9 @@ const categories = [
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [currentAddress, setCurrentAddress] = useState<Address | null>(null);
   const { user, isAuthenticated, isAdmin, logout } = useAuthStore();
   const { totalItems } = useCartStore();
   const { items: wishlistItems, fetchWishlist, clearWishlist } = useWishlistStore();
@@ -46,6 +51,23 @@ const Header = () => {
     navigate('/login');
   };
 
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      if (isAuthenticated) {
+        try {
+          const data = await addressesApi.getAddresses();
+          setAddresses(data);
+          const defaultAddr = data.find(a => a.isDefault);
+          if (defaultAddr) setCurrentAddress(defaultAddr);
+          else if (data.length > 0) setCurrentAddress(data[0]);
+        } catch (error) {
+          console.error('Failed to fetch addresses');
+        }
+      }
+    };
+    fetchAddresses();
+  }, [isAuthenticated]);
+
   return (
     <header className="sticky top-0 z-50 bg-dark-900/70 backdrop-blur-xl border-b border-white/5 support-backdrop-blur:bg-dark-900/95 transition-all duration-300">
       <div className="container">
@@ -58,6 +80,105 @@ const Header = () => {
               <span className="text-secondary-400">Mart</span>
             </div>
           </Link>
+
+          {/* Location Selector (Desktop) */}
+          <div className="hidden lg:flex items-center ml-8 mr-auto relative">
+            <button
+              onClick={() => setIsLocationOpen(!isLocationOpen)}
+              className="flex items-center gap-2 group hover:bg-dark-700/50 p-2 rounded-lg transition-colors"
+              title="Select Delivery Location"
+            >
+              <div className="p-2 bg-dark-700 rounded-full group-hover:bg-primary-500/20 transition-colors">
+                <MapPin className="w-5 h-5 text-primary-500" />
+              </div>
+              <div className="text-left">
+                <p className="text-xs text-gray-400 font-medium">Delivering to</p>
+                <p className="text-sm text-white font-bold flex items-center gap-1 max-w-[150px] truncate">
+                  {currentAddress ? `${currentAddress.city} ${currentAddress.zipCode}` : 'Select Location'}
+                  <ChevronDown className="w-3 h-3 text-gray-500" />
+                </p>
+              </div>
+            </button>
+
+            {isLocationOpen && (
+              <>
+                <div className="fixed inset-0 z-10" onClick={() => setIsLocationOpen(false)} />
+                <div className="absolute top-full left-0 mt-2 w-72 bg-dark-800 border border-dark-600 rounded-xl shadow-2xl z-20 overflow-hidden animate-slide-down">
+                  <div className="p-4 border-b border-dark-600 bg-dark-700/50">
+                    <h3 className="text-white font-semibold flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-primary-500" />
+                      Choose Location
+                    </h3>
+                    <p className="text-xs text-gray-400 mt-1">Select a delivery address</p>
+                  </div>
+                  <div className="max-h-[300px] overflow-y-auto p-2 space-y-2 scroller">
+                    {!isAuthenticated ? (
+                      <div className="text-center py-6 px-4">
+                        <p className="text-sm text-gray-300 mb-4">Please login to see your saved addresses.</p>
+                        <Link
+                          to="/login"
+                          onClick={() => setIsLocationOpen(false)}
+                          className="btn-primary text-sm px-6 py-2 inline-flex items-center gap-2"
+                        >
+                          <User className="w-4 h-4" />
+                          Login Now
+                        </Link>
+                      </div>
+                    ) : addresses.length === 0 ? (
+                      <div className="text-center py-6 px-4">
+                        <p className="text-sm text-gray-300 mb-4">No saved addresses found.</p>
+                        <Link
+                          to="/profile?tab=addresses"
+                          onClick={() => setIsLocationOpen(false)}
+                          className="text-primary-400 text-sm hover:text-primary-300 hover:underline font-medium"
+                        >
+                          + Add New Address
+                        </Link>
+                      </div>
+                    ) : (
+                      addresses.map(addr => (
+                        <button
+                          key={addr.id}
+                          onClick={() => {
+                            setCurrentAddress(addr);
+                            setIsLocationOpen(false);
+                          }}
+                          className={`w-full text-left p-3 rounded-lg border transition-all group ${currentAddress?.id === addr.id
+                            ? 'border-primary-500 bg-primary-500/10'
+                            : 'border-dark-600 hover:border-dark-500 hover:bg-dark-700'
+                            }`}
+                        >
+                          <div className="flex justify-between items-start mb-1">
+                            <span className={`text-[10px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded ${addr.type === 'Home' ? 'bg-blue-500/20 text-blue-400' :
+                              addr.type === 'Work' ? 'bg-purple-500/20 text-purple-400' :
+                                'bg-gray-500/20 text-gray-400'
+                              }`}>
+                              {addr.type}
+                            </span>
+                            {currentAddress?.id === addr.id && <span className="w-2 h-2 rounded-full bg-primary-500 shadow-sm shadow-primary-500/50"></span>}
+                          </div>
+                          <p className="text-sm text-white font-medium truncate mb-0.5 group-hover:text-primary-400 transition-colors">{addr.fullName}</p>
+                          <p className="text-xs text-gray-400 truncate">{addr.street}, {addr.city}</p>
+                          <p className="text-xs text-gray-500 mt-0.5">{addr.zipCode}</p>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                  {isAuthenticated && (
+                    <div className="p-3 border-t border-dark-600 bg-dark-700/30 text-center">
+                      <Link
+                        to="/profile?tab=addresses"
+                        onClick={() => setIsLocationOpen(false)}
+                        className="text-xs text-primary-400 hover:text-primary-300 font-medium hover:underline"
+                      >
+                        Manage Addresses
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1">

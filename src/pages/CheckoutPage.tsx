@@ -3,16 +3,18 @@
 // Migrated from: PHP checkout.php
 // =====================================================
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Loader2, CreditCard, Wallet, Building, Smartphone, Truck, CheckCircle } from 'lucide-react';
 import { useCartStore } from '../stores/cartStore';
-import { ordersApi } from '../services';
+import { ordersApi, addressesApi } from '../services';
+import type { Address } from '../services/addressesApi';
 import { PaymentMethod } from '../types';
 import toast from 'react-hot-toast';
+import { useAuthStore } from '../stores/authStore';
 
 const checkoutSchema = z.object({
   shippingName: z.string().min(1, 'Please enter your full name'),
@@ -34,9 +36,58 @@ const paymentMethods = [
 const CheckoutPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
-  const [orderId, setOrderId] = useState<number | null>(null);
+  const [orderId, setOrderId] = useState<string | null>(null);
   const { items, totalPrice, clearCart } = useCartStore();
+  const { user } = useAuthStore();
   const navigate = useNavigate();
+
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [selectedAddressId, setSelectedAddressId] = useState<string>('new');
+
+  useEffect(() => {
+    if (user) {
+      const fetchAddresses = async () => {
+        try {
+          const data = await addressesApi.getAddresses();
+          setAddresses(data);
+
+          // If there's a default address, select it and populate form
+          const defaultAddr = data.find(a => a.isDefault);
+          if (defaultAddr) {
+            selectAddress(defaultAddr);
+          } else if (data.length > 0) {
+            // Or select the first one if no default
+            selectAddress(data[0]);
+          }
+        } catch (error) {
+          console.error('Failed to load addresses');
+        } finally {
+        }
+      };
+      fetchAddresses();
+    }
+  }, [user]);
+
+  const selectAddress = (addr: Address) => {
+    setSelectedAddressId(addr.id);
+    setValue('shippingName', addr.fullName);
+    setValue('shippingPhone', addr.phone);
+    setValue('shippingAddress', `${addr.street}, ${addr.city}, ${addr.state} - ${addr.zipCode}`);
+  };
+
+  const handleAddressSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = e.target.value;
+    setSelectedAddressId(id);
+
+    if (id === 'new') {
+      setValue('shippingName', '');
+      setValue('shippingPhone', '');
+      setValue('shippingAddress', '');
+    } else {
+      const addr = addresses.find(a => a.id === id);
+      if (addr) selectAddress(addr);
+    }
+  };
 
   const total = totalPrice();
 
@@ -125,7 +176,25 @@ const CheckoutPage = () => {
                 <Truck className="w-5 h-5 text-primary-500" />
                 Shipping Details
               </h2>
-              
+
+              {addresses.length > 0 && (
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-400 mb-2">Select from Address Book</label>
+                  <select
+                    value={selectedAddressId}
+                    onChange={handleAddressSelection}
+                    className="input-field w-full"
+                  >
+                    {addresses.map(addr => (
+                      <option key={addr.id} value={addr.id}>
+                        {addr.type} - {addr.fullName}, {addr.city}
+                      </option>
+                    ))}
+                    <option value="new">+ Add New Address</option>
+                  </select>
+                </div>
+              )}
+
               <div className="space-y-4">
                 <div>
                   <label htmlFor="shippingName" className="form-label">
@@ -190,21 +259,18 @@ const CheckoutPage = () => {
                     key={method.value}
                     type="button"
                     onClick={() => setValue('paymentMethod', method.value as any)}
-                    className={`p-4 rounded-lg border-2 transition-all ${
-                      selectedPayment === method.value
-                        ? 'border-primary-500 bg-primary-500/10'
-                        : 'border-dark-500 bg-dark-600 hover:border-dark-400'
-                    }`}
+                    className={`p-4 rounded-lg border-2 transition-all ${selectedPayment === method.value
+                      ? 'border-primary-500 bg-primary-500/10'
+                      : 'border-dark-500 bg-dark-600 hover:border-dark-400'
+                      }`}
                   >
                     <method.icon
-                      className={`w-6 h-6 mb-2 mx-auto ${
-                        selectedPayment === method.value ? 'text-primary-500' : 'text-gray-400'
-                      }`}
+                      className={`w-6 h-6 mb-2 mx-auto ${selectedPayment === method.value ? 'text-primary-500' : 'text-gray-400'
+                        }`}
                     />
                     <p
-                      className={`text-sm font-medium ${
-                        selectedPayment === method.value ? 'text-white' : 'text-gray-400'
-                      }`}
+                      className={`text-sm font-medium ${selectedPayment === method.value ? 'text-white' : 'text-gray-400'
+                        }`}
                     >
                       {method.label}
                     </p>
