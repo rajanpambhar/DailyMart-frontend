@@ -75,56 +75,74 @@ const HomePage = () => {
 
   return (
     <div className="animate-fade-in">
+      {/* Ambient Background Elements */}
+      <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary-600/20 rounded-full blur-[120px] mix-blend-screen animate-pulse" style={{ animationDuration: '4s' }} />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-secondary-600/20 rounded-full blur-[120px] mix-blend-screen animate-pulse" style={{ animationDuration: '5s', animationDelay: '1s' }} />
+        <div className="absolute top-[40%] left-[60%] w-[30%] h-[30%] bg-primary-400/10 rounded-full blur-[100px] mix-blend-screen animate-pulse" style={{ animationDuration: '6s', animationDelay: '2s' }} />
+      </div>
+
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-dark-800 via-dark-700 to-dark-800 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(51,204,255,0.1),transparent_50%)]" />
+      <section className="relative overflow-hidden pt-10">
         <div className="container py-20 relative">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="animate-slide-up">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                <span className="block overflow-hidden whitespace-nowrap animate-typewriter">
+            <div className="animate-slide-up relative z-10">
+              <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight tracking-tight">
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-white to-secondary-400 animate-gradient-x">
                   Shop smarter.
                 </span>
-                <span className="text-gradient block">Live better.</span>
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-white to-secondary-400 animate-gradient-x">
+                  Live better.
+                </span>
               </h1>
-              <p className="text-lg text-gray-400 mb-8 max-w-lg">
-                Fresh groceries, curated fashion and gadgets. Explore categories and find what you need.
+              <p className="text-lg text-gray-300 mb-8 max-w-lg font-light leading-relaxed">
+                Everything you need, right at your doorstep. Fresh groceries, latest electronics, and fashion essentials delivered in minutes.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link to="/category/vegetables" className="btn-primary group">
-                  Buy Fresh Products
+                <Link to="/category/vegetables" className="btn-primary group shadow-[0_0_40px_rgba(51,204,255,0.3)]">
+                  Start Shopping
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link to="/category/electronics" className="btn-secondary">
-                  Top Electronics
+                  Explore Electronics
                 </Link>
               </div>
 
               {/* Badges */}
-              <div className="flex flex-wrap gap-3 mt-8">
-                <span className="badge badge-info flex items-center gap-2">
-                  <Truck className="w-4 h-4" /> Fast delivery
-                </span>
-                <span className="badge badge-success flex items-center gap-2">
-                  <Shield className="w-4 h-4" /> Quality guaranteed
-                </span>
-                <span className="badge badge-info flex items-center gap-2">
-                  <CreditCard className="w-4 h-4" /> Secure checkout
-                </span>
+              <div className="flex flex-wrap gap-4 mt-12">
+                <div className="glass-card px-4 py-2 flex items-center gap-3">
+                  <div className="p-2 bg-primary-500/20 rounded-lg text-primary-300">
+                    <Truck className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-primary-200 uppercase tracking-wider font-semibold">Delivery</p>
+                    <p className="text-sm font-medium">Fast & Free</p>
+                  </div>
+                </div>
+                <div className="glass-card px-4 py-2 flex items-center gap-3">
+                  <div className="p-2 bg-secondary-500/20 rounded-lg text-secondary-300">
+                    <Shield className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-secondary-200 uppercase tracking-wider font-semibold">Payment</p>
+                    <p className="text-sm font-medium">100% Secure</p>
+                   </div>
+                </div>
               </div>
             </div>
 
-            {/* Quick Links Card */}
-            <div className="glass-card p-6 animate-scale-in">
-              <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
-              <div className="grid grid-cols-2 gap-3">
+            {/* Quick Links Card - Floating Glass */}
+            <div className="glass-card p-8 animate-scale-in relative z-10 backdrop-blur-2xl bg-white/5 border-white/20">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl pointer-events-none" />
+              <h3 className="text-xl font-semibold text-white mb-6 tracking-wide">Popular Categories</h3>
+              <div className="grid grid-cols-2 gap-4">
                 {categories.map((cat) => (
                   <Link
                     key={cat.slug}
                     to={`/category/${cat.slug}`}
-                    className="flex items-center gap-3 p-3 bg-dark-600/50 rounded-lg hover:bg-dark-600 transition-colors group link-underline"
+                    className="flex items-center gap-4 p-4 bg-white/5 border border-white/5 rounded-xl hover:bg-white/10 hover:border-white/20 hover:scale-[1.02] transition-all duration-300 group"
                   >
-                    <span className="text-sm font-medium text-gray-300 group-hover:text-white relative z-10">
+                    <span className="text-sm font-medium text-gray-200 group-hover:text-white">
                       {cat.name}
                     </span>
                   </Link>
@@ -136,17 +154,20 @@ const HomePage = () => {
       </section>
 
       {/* Best Selling Section */}
-      <section className="py-16 bg-dark-800">
+      <section className="py-20 relative">
         <div
           className="container relative group/carousel"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-white">
-              Best Selling Products
-            </h2>
-            <Link to="/products" className="btn-ghost text-primary-500">
+          <div className="flex items-center justify-between mb-10">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
+                Trending Now
+              </h2>
+              <p className="text-gray-400">Top picked items just for you</p>
+            </div>
+            <Link to="/products" className="btn-ghost text-white border border-white/10 hover:border-white/30 backdrop-blur-sm">
               View All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -154,7 +175,7 @@ const HomePage = () => {
           {/* Navigation Arrows */}
           <button
             onClick={() => scroll('left')}
-            className="absolute left-0 top-[60%] -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 bg-dark-700/80 backdrop-blur-sm border border-dark-600 rounded-full flex items-center justify-center text-white opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-primary-500 hover:text-dark-900 shadow-xl"
+            className="absolute left-0 top-[60%] -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 bg-white/10 backdrop-blur-lg border border-white/20 rounded-full flex items-center justify-center text-white opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-white/20 hover:scale-110 shadow-lg"
             aria-label="Scroll left"
           >
             <ChevronLeft className="w-6 h-6" />
@@ -162,7 +183,7 @@ const HomePage = () => {
 
           <button
             onClick={() => scroll('right')}
-            className="absolute right-0 top-[60%] -translate-y-1/2 translate-x-4 z-10 w-12 h-12 bg-dark-700/80 backdrop-blur-sm border border-dark-600 rounded-full flex items-center justify-center text-white opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-primary-500 hover:text-dark-900 shadow-xl"
+            className="absolute right-0 top-[60%] -translate-y-1/2 translate-x-4 z-10 w-12 h-12 bg-white/10 backdrop-blur-lg border border-white/20 rounded-full flex items-center justify-center text-white opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-white/20 hover:scale-110 shadow-lg"
             aria-label="Scroll right"
           >
             <ChevronRight className="w-6 h-6" />
@@ -171,7 +192,7 @@ const HomePage = () => {
           {loading ? (
             <div className="flex gap-6 overflow-hidden">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="min-w-[280px] skeleton h-96 rounded-xl flex-shrink-0" />
+                <div key={i} className="min-w-[280px] h-96 bg-white/5 rounded-2xl animate-pulse border border-white/5" />
               ))}
             </div>
           ) : (
@@ -181,7 +202,7 @@ const HomePage = () => {
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {bestSelling.map((product) => (
-                <div key={product.id} className="min-w-[280px] max-w-[280px] image-zoom rounded-xl flex-shrink-0">
+                <div key={product.id} className="min-w-[280px] max-w-[280px] flex-shrink-0 transform transition-transform duration-500 hover:scale-105">
                   <ProductCard product={product} compact />
                 </div>
               ))}
@@ -190,49 +211,46 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Promo Banner */}
-      <section className="py-12 bg-gradient-to-r from-primary-500/10 via-dark-800 to-secondary-400/10">
+      {/* Promo Banner - Glass Overlay */}
+      <section className="py-16">
         <div className="container">
-          <div className="glass-card p-8 md:p-12 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Special Promotion
-            </h2>
-            <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-              Enjoy exclusive deals and offers on DailyMart! Get up to 50% off on selected items.
-            </p>
-            <Link to="/promotions" className="btn-primary">
-              Shop Now
-              <ArrowRight className="w-5 h-5" />
-            </Link>
+          <div className="relative rounded-3xl overflow-hidden p-1 bg-gradient-to-r from-primary-500/30 via-dark-800 to-secondary-500/30">
+            <div className="bg-black/40 backdrop-blur-2xl rounded-[22px] p-8 md:p-16 text-center relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
+              
+              <div className="relative z-10">
+                <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+                  Weekly Special Offer
+                </h2>
+                <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+                  Get premium quality products at unbeatable prices. Limited time offer on selected categories.
+                </p>
+                <Link to="/promotions" className="btn-primary px-10 py-4 text-lg shadow-[0_0_50px_rgba(51,204,255,0.4)]">
+                  Claim Offer
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-dark-900">
+      <section className="py-20">
         <div className="container">
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-primary-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Truck className="w-8 h-8 text-primary-500" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Free Delivery</h3>
-              <p className="text-gray-400">Free shipping on orders over ₹500</p>
+            {[
+              { icon: Truck, title: "Global Shipping", desc: "Fast & reliable delivery worldwide" },
+              { icon: Shield, title: "Buyer Protection", desc: "Full refund if item not as described" },
+              { icon: CreditCard, title: "Secure Payment", desc: "Encrypted & safe transactions" }
+            ].map((feature, idx) => (
+              <div key={idx} className="glass-card p-8 text-center hover:bg-white/10 transition-colors duration-300 group">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-white/10 to-transparent border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                  <feature.icon className="w-8 h-8 text-white" />
             </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-secondary-400/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-8 h-8 text-secondary-400" />
+                <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
+                <p className="text-gray-400">{feature.desc}</p>
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Secure Payment</h3>
-              <p className="text-gray-400">100% secure payment processing</p>
-            </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-primary-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <CreditCard className="w-8 h-8 text-primary-500" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Easy Returns</h3>
-              <p className="text-gray-400">30-day return policy on all items</p>
-            </div>
+            ))}
           </div>
         </div>
       </section>

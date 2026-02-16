@@ -10,7 +10,7 @@ import Footer from './Footer';
 
 const MainLayout = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-dark-800">
+    <div className="min-h-screen flex flex-col bg-transparent">
       <Header />
       <main className="flex-1">
         <Outlet />

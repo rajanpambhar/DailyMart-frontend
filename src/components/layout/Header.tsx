@@ -36,7 +36,7 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-dark-800/95 backdrop-blur-lg border-b border-dark-600">
+    <header className="sticky top-0 z-50 bg-dark-900/70 backdrop-blur-xl border-b border-white/5 support-backdrop-blur:bg-dark-900/95 transition-all duration-300">
       <div className="container">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -53,10 +53,10 @@ const Header = () => {
             <NavLink
               to="/products"
               className={({ isActive }) =>
-                `px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                `px-3 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
                   isActive
-                    ? 'text-primary-500 bg-primary-500/10'
-                    : 'text-gray-300 hover:text-white hover:bg-dark-600'
+                    ? 'text-primary-400 bg-white/10 shadow-[0_0_15px_rgba(51,204,255,0.2)] border border-white/5'
+                    : 'text-gray-300 hover:text-white hover:bg-white/5'
                 }`
               }
             >
@@ -67,10 +67,10 @@ const Header = () => {
                 key={cat.slug}
                 to={`/category/${cat.slug}`}
                 className={({ isActive }) =>
-                  `px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  `px-3 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
                     isActive
-                      ? 'text-primary-500 bg-primary-500/10'
-                      : 'text-gray-300 hover:text-white hover:bg-dark-600'
+                      ? 'text-primary-400 bg-white/10 shadow-[0_0_15px_rgba(51,204,255,0.2)] border border-white/5'
+                      : 'text-gray-300 hover:text-white hover:bg-white/5'
                   }`
                 }
               >
@@ -84,11 +84,11 @@ const Header = () => {
             {/* Cart */}
             <Link
               to="/cart"
-              className="relative p-2 rounded-lg text-gray-300 hover:text-white hover:bg-dark-600 transition-colors"
+              className="relative p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
             >
               <ShoppingCart className="w-6 h-6" />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center bg-primary-500 text-dark-900 text-xs font-bold rounded-full">
+                <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center bg-primary-500 text-dark-900 text-xs font-bold rounded-full shadow-[0_0_10px_rgba(51,204,255,0.5)]">
                   {cartCount > 99 ? '99+' : cartCount}
                 </span>
               )}
@@ -99,9 +99,9 @@ const Header = () => {
               <div className="relative">
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center gap-2 p-2 rounded-lg text-gray-300 hover:text-white hover:bg-dark-600 transition-colors"
+                  className="flex items-center gap-2 p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
                 >
-                  <div className="w-8 h-8 bg-primary-500/20 rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-primary-500/20 rounded-full flex items-center justify-center border border-primary-500/30">
                     <User className="w-5 h-5 text-primary-500" />
                   </div>
                   <ChevronDown className="w-4 h-4" />
@@ -113,8 +113,8 @@ const Header = () => {
                       className="fixed inset-0 z-10"
                       onClick={() => setIsDropdownOpen(false)}
                     />
-                    <div className="absolute right-0 mt-2 w-56 bg-dark-700 border border-dark-500 rounded-xl shadow-xl z-20 overflow-hidden animate-slide-down">
-                      <div className="p-4 border-b border-dark-500">
+                    <div className="absolute right-0 mt-2 w-56 bg-dark-900/90 backdrop-blur-2xl border border-white/10 rounded-xl shadow-2xl z-20 overflow-hidden animate-slide-down">
+                      <div className="p-4 border-b border-white/10 bg-white/5">
                         <p className="font-medium text-white">{user.fullname}</p>
                         <p className="text-sm text-gray-400">{user.email}</p>
                       </div>
@@ -122,7 +122,7 @@ const Header = () => {
                         <Link
                           to="/profile"
                           onClick={() => setIsDropdownOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-dark-600 transition-colors"
+                          className="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
                         >
                           <User className="w-4 h-4" />
                           My Profile
@@ -130,7 +130,7 @@ const Header = () => {
                         <Link
                           to="/orders"
                           onClick={() => setIsDropdownOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-dark-600 transition-colors"
+                          className="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
                         >
                           <ShoppingCart className="w-4 h-4" />
                           My Orders
@@ -139,17 +139,17 @@ const Header = () => {
                           <Link
                             to="/admin"
                             onClick={() => setIsDropdownOpen(false)}
-                            className="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-dark-600 transition-colors"
+                            className="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
                           >
                             <Settings className="w-4 h-4" />
                             Admin Panel
                           </Link>
                         )}
                       </div>
-                      <div className="py-2 border-t border-dark-500">
+                      <div className="py-2 border-t border-white/10">
                         <button
                           onClick={handleLogout}
-                          className="flex items-center gap-3 w-full px-4 py-2 text-red-400 hover:text-red-300 hover:bg-dark-600 transition-colors"
+                          className="flex items-center gap-3 w-full px-4 py-2 text-red-400 hover:text-red-300 hover:bg-white/10 transition-colors"
                         >
                           <LogOut className="w-4 h-4" />
                           Log Out
@@ -162,7 +162,7 @@ const Header = () => {
             ) : (
               <Link
                 to="/login"
-                className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-dark-900 font-medium rounded-lg hover:bg-primary-400 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-primary-600/90 hover:bg-primary-500 text-white font-medium rounded-lg transition-all shadow-lg hover:shadow-primary-500/30 backdrop-blur-sm"
               >
                 <User className="w-4 h-4" />
                 Login
@@ -172,7 +172,7 @@ const Header = () => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-2 rounded-lg text-gray-300 hover:text-white hover:bg-dark-600 transition-colors"
+              className="lg:hidden p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
             >
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -181,16 +181,16 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <nav className="lg:hidden py-4 border-t border-dark-600 animate-slide-down">
-            <div className="grid grid-cols-2 gap-2">
+          <nav className="lg:hidden py-4 border-t border-white/10 animate-slide-down bg-dark-900/95 backdrop-blur-xl absolute top-16 left-0 w-full shadow-2xl">
+            <div className="container grid grid-cols-2 gap-2">
               <NavLink
                 to="/products"
                 onClick={() => setIsMenuOpen(false)}
                 className={({ isActive }) =>
                   `px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
                     isActive
-                      ? 'text-primary-500 bg-primary-500/10'
-                      : 'text-gray-300 hover:text-white bg-dark-700'
+                      ? 'text-primary-400 bg-white/10 border border-white/5'
+                      : 'text-gray-300 hover:text-white bg-white/5 hover:bg-white/10'
                   }`
                 }
               >
@@ -204,8 +204,8 @@ const Header = () => {
                   className={({ isActive }) =>
                     `px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
                       isActive
-                        ? 'text-primary-500 bg-primary-500/10'
-                        : 'text-gray-300 hover:text-white bg-dark-700'
+                        ? 'text-primary-400 bg-white/10 border border-white/5'
+                        : 'text-gray-300 hover:text-white bg-white/5 hover:bg-white/10'
                     }`
                   }
                 >
