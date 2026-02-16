@@ -24,6 +24,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import ProfilePage from './pages/ProfilePage';
 import OrdersPage from './pages/OrdersPage';
 import OrderDetailPage from './pages/OrderDetailPage';
+import WishlistPage from './pages/WishlistPage';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -57,7 +58,7 @@ function App() {
         <Route path="/promotions" element={<PromotionPage />} />
         <Route path="/category/:slug" element={<CategoryPage />} />
         <Route path="/product/:id" element={<ProductPage />} />
-        
+
         {/* Map PHP category pages to category route */}
         <Route path="/vegetables" element={<Navigate to="/category/vegetables" replace />} />
         <Route path="/fruits" element={<Navigate to="/category/fruits" replace />} />
@@ -75,6 +76,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/orders/:id" element={<OrderDetailPage />} />
+          <Route path="/wishlist" element={<WishlistPage />} />
         </Route>
       </Route>
 

@@ -4,9 +4,10 @@
 // =====================================================
 
 import { useState } from 'react';
-import { ShoppingCart, Plus, Minus, Loader2 } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Loader2, Heart } from 'lucide-react';
 import { Product } from '../../types';
 import { useCartStore } from '../../stores/cartStore';
+import { useWishlistStore } from '../../stores/wishlistStore';
 import { useAuthStore } from '../../stores/authStore';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,12 +20,14 @@ const ProductCard = ({ product, compact = false }: ProductCardProps) => {
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const { addItem, getItem } = useCartStore();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
   const { isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
 
   const cartItem = getItem(product.id);
   const inCart = !!cartItem;
   const isOutOfStock = product.stockQuantity <= 0;
+  const inWishlist = isInWishlist(product.id);
 
   const handleCardClick = () => {
     navigate(`/product/${product.id}`);
@@ -33,7 +36,7 @@ const ProductCard = ({ product, compact = false }: ProductCardProps) => {
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    
+
     if (!isAuthenticated) {
       navigate('/login');
       return;
@@ -55,10 +58,26 @@ const ProductCard = ({ product, compact = false }: ProductCardProps) => {
     }, 300);
   };
 
+  const handleToggleWishlist = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
+    if (inWishlist) {
+      await removeFromWishlist(product.id);
+    } else {
+      await addToWishlist(product);
+    }
+  };
+
   if (compact) {
     return (
-      <div 
-        className="product-card group cursor-pointer" 
+      <div
+        className="product-card group cursor-pointer"
         onClick={handleCardClick}
       >
         <div className="relative aspect-square mb-2 overflow-hidden rounded-lg bg-dark-600">
@@ -100,8 +119,8 @@ const ProductCard = ({ product, compact = false }: ProductCardProps) => {
   }
 
   return (
-    <div 
-      className="product-card cursor-pointer" 
+    <div
+      className="product-card cursor-pointer"
       onClick={handleCardClick}
     >
       <div className="relative aspect-square mb-3 overflow-hidden rounded-xl bg-dark-600">
@@ -120,6 +139,19 @@ const ProductCard = ({ product, compact = false }: ProductCardProps) => {
           <span className="absolute top-2 left-2 px-2.5 py-1 bg-secondary-400 text-dark-900 text-xs font-bold rounded-lg">
             Best Seller
           </span>
+        )}
+        {/* Wishlist Button */}
+        {isAuthenticated && (
+          <button
+            onClick={handleToggleWishlist}
+            className={`absolute top-2 right-2 p-2 rounded-full transition-all duration-300 ${inWishlist
+                ? 'bg-red-500 text-white shadow-lg'
+                : 'bg-dark-700/80 text-gray-300 hover:bg-red-500 hover:text-white'
+              }`}
+            title={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+          >
+            <Heart className={`w-4 h-4 ${inWishlist ? 'fill-current' : ''}`} />
+          </button>
         )}
       </div>
 

@@ -5,9 +5,9 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { 
-  Filter, X, Search, ChevronDown, SlidersHorizontal, 
-  ArrowLeft, ArrowRight 
+import {
+  Filter, X, Search, ChevronDown, SlidersHorizontal,
+  ArrowLeft, ArrowRight
 } from 'lucide-react';
 import { productsApi, categoriesApi } from '../services';
 import { Product, Category, Pagination } from '../types';
@@ -22,7 +22,7 @@ const SORT_OPTIONS = [
 
 const AllProductsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  
+
   // Data State
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -32,7 +32,7 @@ const AllProductsPage = () => {
 
   // UI State
   const [showMobileFilters, setShowMobileFilters] = useState(false);
-  
+
   // Filter State
   const [filters, setFilters] = useState({
     category: searchParams.get('category') || '',
@@ -80,7 +80,7 @@ const AllProductsPage = () => {
       // Prepare query params
       const params: any = {
         page: filters.page,
-        limit: 15, // Items per page
+        limit: 20, // Items per page - divisible by 4 and 5 for perfect grid layout
         sortBy: sortField,
         sortOrder,
         isActive: true,
@@ -92,7 +92,7 @@ const AllProductsPage = () => {
       if (filters.search) params.search = filters.search;
 
       const response = await productsApi.getProducts(params);
-      
+
       if (response && response.success) {
         setProducts(response.data);
         setPagination(response.pagination);
@@ -107,7 +107,7 @@ const AllProductsPage = () => {
 
   useEffect(() => {
     fetchProducts();
-    
+
     // Update URL params
     const params: any = {};
     if (filters.category) params.category = filters.category;
@@ -116,7 +116,7 @@ const AllProductsPage = () => {
     if (filters.search) params.search = filters.search;
     if (filters.sortBy !== 'newest') params.sortBy = filters.sortBy;
     if (filters.page > 1) params.page = filters.page.toString();
-    
+
     setSearchParams(params);
   }, [filters, fetchProducts, setSearchParams]);
 
@@ -148,7 +148,7 @@ const AllProductsPage = () => {
       </div>
 
       <div className="container">
-        
+
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
@@ -157,9 +157,9 @@ const AllProductsPage = () => {
               Explore our wide range of premium products
             </p>
           </div>
-          
+
           {/* Mobile Filter Button */}
-          <button 
+          <button
             onClick={() => setShowMobileFilters(true)}
             className="md:hidden w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl text-white font-medium active:bg-white/10"
           >
@@ -169,14 +169,14 @@ const AllProductsPage = () => {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
-          
+
           {/* Sidebar Filters - Desktop */}
           <aside className={`
             fixed inset-0 z-40 bg-dark-900/95 backdrop-blur-2xl p-6 overflow-y-auto w-full max-w-[300px] transition-transform duration-300 ease-in-out lg:static lg:transform-none lg:w-72 lg:p-0 lg:bg-transparent lg:backdrop-blur-none lg:overflow-visible lg:block
             ${showMobileFilters ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           `}>
             <div className="lg:sticky lg:top-24 space-y-6">
-              
+
               {/* Mobile Header */}
               <div className="flex items-center justify-between lg:hidden mb-6">
                 <h2 className="text-xl font-bold text-white">Filters</h2>
@@ -219,10 +219,10 @@ const AllProductsPage = () => {
                       All Categories
                     </span>
                   </label>
-                  
+
                   {loadingCategories ? (
                     <div className="space-y-2">
-                       {[1, 2, 3].map(i => <div key={i} className="h-8 bg-white/5 rounded-lg animate-pulse" />)}
+                      {[1, 2, 3].map(i => <div key={i} className="h-8 bg-white/5 rounded-lg animate-pulse" />)}
                     </div>
                   ) : (
                     categories.map(cat => (
@@ -249,7 +249,7 @@ const AllProductsPage = () => {
                 <h3 className="text-white font-semibold mb-4">Price Range</h3>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="relative flex-1">
-                    <span className="absolute left-3 top-2.5 text-gray-400 text-sm">$</span>
+                    <span className="absolute left-3 top-2.5 text-gray-400 text-sm">₹</span>
                     <input
                       type="number"
                       placeholder="Min"
@@ -260,7 +260,7 @@ const AllProductsPage = () => {
                   </div>
                   <span className="text-gray-400">-</span>
                   <div className="relative flex-1">
-                    <span className="absolute left-3 top-2.5 text-gray-400 text-sm">$</span>
+                    <span className="absolute left-3 top-2.5 text-gray-400 text-sm">₹</span>
                     <input
                       type="number"
                       placeholder="Max"
@@ -286,7 +286,7 @@ const AllProductsPage = () => {
 
           {/* Backdrop for mobile */}
           {showMobileFilters && (
-            <div 
+            <div
               className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden"
               onClick={() => setShowMobileFilters(false)}
             />
@@ -294,13 +294,13 @@ const AllProductsPage = () => {
 
           {/* Main Content */}
           <main className="flex-1">
-            
+
             {/* Toolbar */}
             <div className="glass-card p-4 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 mb-6 flex flex-wrap items-center justify-between gap-4">
               <p className="text-gray-400 text-sm">
                 Showing <span className="text-white font-medium">{pagination?.total || products.length}</span> results
               </p>
-              
+
               <div className="flex items-center gap-3">
                 <span className="text-sm text-gray-400 hidden sm:inline">Sort by:</span>
                 <div className="relative group">
@@ -320,16 +320,16 @@ const AllProductsPage = () => {
 
             {/* Products Grid */}
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                 {[...Array(10)].map((_, i) => (
                   <div key={i} className="bg-white/5 rounded-2xl h-[340px] animate-pulse border border-white/5" />
                 ))}
               </div>
             ) : products.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                 {products.map((product, i) => (
-                  <div 
-                    key={product.id} 
+                  <div
+                    key={product.id}
                     className="animate-slide-up"
                     style={{ animationDelay: `${i * 50}ms` }}
                   >
@@ -367,23 +367,22 @@ const AllProductsPage = () => {
                 >
                   <ArrowLeft className="w-5 h-5" />
                 </button>
-                
+
                 {[...Array(Math.min(5, pagination.totalPages))].map((_, idx) => {
                   let pageNum = idx + 1;
                   if (pagination.totalPages > 5 && filters.page > 3) {
-                     const start = Math.min(pagination.totalPages - 4, filters.page - 2);
-                     pageNum = start + idx;
+                    const start = Math.min(pagination.totalPages - 4, filters.page - 2);
+                    pageNum = start + idx;
                   }
 
                   return (
                     <button
                       key={pageNum}
                       onClick={() => handleFilterChange('page', pageNum)}
-                      className={`w-10 h-10 rounded-xl font-medium transition-all duration-300 ${
-                        filters.page === pageNum
-                          ? 'bg-primary-600 text-white shadow-[0_0_15px_rgba(51,204,255,0.4)] border border-primary-500/50'
-                          : 'bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white hover:border-white/20'
-                      }`}
+                      className={`w-10 h-10 rounded-xl font-medium transition-all duration-300 ${filters.page === pageNum
+                        ? 'bg-primary-600 text-white shadow-[0_0_15px_rgba(51,204,255,0.4)] border border-primary-500/50'
+                        : 'bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white hover:border-white/20'
+                        }`}
                     >
                       {pageNum}
                     </button>

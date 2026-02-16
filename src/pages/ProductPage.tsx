@@ -4,10 +4,11 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShoppingCart, Plus, Minus, Loader2, Leaf, CheckCircle, Truck, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Plus, Minus, Loader2, Leaf, CheckCircle, Truck, ShieldCheck, Heart } from 'lucide-react';
 import { productsApi } from '../services';
 import { Product } from '../types';
 import { useCartStore } from '../stores/cartStore';
+import { useWishlistStore } from '../stores/wishlistStore';
 import { useAuthStore } from '../stores/authStore';
 
 const ProductPage = () => {
@@ -17,8 +18,11 @@ const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const { addItem } = useCartStore();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
   const { isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
+
+  const inWishlist = product ? isInWishlist(product.id) : false;
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -55,6 +59,21 @@ const ProductPage = () => {
       setQuantity(1);
       setIsAdding(false);
     }, 300);
+  };
+
+  const handleToggleWishlist = async () => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
+    if (!product) return;
+
+    if (inWishlist) {
+      await removeFromWishlist(product.id);
+    } else {
+      await addToWishlist(product);
+    }
   };
 
   if (loading) {
@@ -135,14 +154,14 @@ const ProductPage = () => {
                 <h1 className="text-4xl font-bold text-white leading-tight">{product.name}</h1>
               </div>
               <div className="text-right">
-                 {isOutOfStock ? (
+                {isOutOfStock ? (
                   <span className="badge badge-error">Out of Stock</span>
                 ) : (
                   <span className="badge badge-success">{product.stockQuantity} in stock</span>
                 )}
               </div>
             </div>
-            
+
             <div className="flex items-baseline gap-3">
               <span className="text-4xl font-bold text-primary-500">
                 ₹{product.price.toFixed(2)}
@@ -182,6 +201,21 @@ const ProductPage = () => {
 
                 <div className="h-10 w-px bg-dark-600 hidden sm:block"></div>
 
+                {/* Wishlist Button */}
+                {isAuthenticated && (
+                  <button
+                    onClick={handleToggleWishlist}
+                    className={`h-10 px-6 rounded-lg transition-all duration-300 flex items-center gap-2 font-semibold text-sm ${inWishlist
+                        ? 'bg-red-500 text-white hover:bg-red-600'
+                        : 'bg-dark-600 text-gray-300 hover:bg-red-500 hover:text-white'
+                      }`}
+                    title={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+                  >
+                    <Heart className={`w-4 h-4 ${inWishlist ? 'fill-current' : ''}`} />
+                    {inWishlist ? 'In Wishlist' : 'Wishlist'}
+                  </button>
+                )}
+
                 <button
                   onClick={handleAddToCart}
                   disabled={isAdding}
@@ -204,20 +238,20 @@ const ProductPage = () => {
           <div className="space-y-6 pt-2 border-t border-dark-600">
             <div>
               <h3 className="text-lg font-semibold text-white mb-2">Description</h3>
-               {product.description ? (
+              {product.description ? (
                 <p className="text-gray-400 leading-relaxed text-sm">{product.description}</p>
               ) : (
                 <p className="text-gray-500 italic text-sm">No specific description available for this product.</p>
               )}
             </div>
-            
+
             <div className="bg-dark-600/50 rounded-xl p-4 border border-dark-500">
               <p className="text-primary-400 font-medium mb-1 flex items-center gap-2 text-sm">
                 <Leaf className="w-4 h-4" />
                 Freshness Guaranteed
               </p>
               <p className="text-gray-300 text-sm">
-                Our products are sourced fresh daily and undergo rigorous quality checks. 
+                Our products are sourced fresh daily and undergo rigorous quality checks.
                 We ensure that this product is of the highest quality, hand-picked for you.
                 Experience the difference of premium selection with every order.
               </p>
@@ -235,7 +269,7 @@ const ProductPage = () => {
                 <p className="text-xs text-gray-400 mt-0.5">Sourced from certified organic farms.</p>
               </div>
             </div>
-            
+
             <div className="flex items-start gap-3">
               <div className="p-2 rounded-lg bg-primary-500/10 text-primary-500 shrink-0">
                 <CheckCircle className="w-5 h-5" />

@@ -3,11 +3,12 @@
 // Migrated from: PHP header.php
 // =====================================================
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Menu, X, ShoppingCart, User, LogOut, Settings, ChevronDown } from 'lucide-react';
+import { Menu, X, ShoppingCart, User, LogOut, Settings, ChevronDown, Heart } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { useCartStore } from '../../stores/cartStore';
+import { useWishlistStore } from '../../stores/wishlistStore';
 import Logo from '../common/Logo';
 
 const categories = [
@@ -26,11 +27,21 @@ const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, isAuthenticated, isAdmin, logout } = useAuthStore();
   const { totalItems } = useCartStore();
+  const { items: wishlistItems, fetchWishlist, clearWishlist } = useWishlistStore();
   const navigate = useNavigate();
 
   const cartCount = totalItems();
+  const wishlistCount = wishlistItems.length;
+
+  // Fetch wishlist when user is authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchWishlist();
+    }
+  }, [isAuthenticated, fetchWishlist]);
 
   const handleLogout = async () => {
+    clearWishlist(); // Clear wishlist data on logout
     await logout();
     navigate('/login');
   };
@@ -53,10 +64,9 @@ const Header = () => {
             <NavLink
               to="/products"
               className={({ isActive }) =>
-                `px-3 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
-                  isActive
-                    ? 'text-primary-400 bg-white/10 shadow-[0_0_15px_rgba(51,204,255,0.2)] border border-white/5'
-                    : 'text-gray-300 hover:text-white hover:bg-white/5'
+                `px-3 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${isActive
+                  ? 'text-primary-400 bg-white/10 shadow-[0_0_15px_rgba(51,204,255,0.2)] border border-white/5'
+                  : 'text-gray-300 hover:text-white hover:bg-white/5'
                 }`
               }
             >
@@ -67,10 +77,9 @@ const Header = () => {
                 key={cat.slug}
                 to={`/category/${cat.slug}`}
                 className={({ isActive }) =>
-                  `px-3 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
-                    isActive
-                      ? 'text-primary-400 bg-white/10 shadow-[0_0_15px_rgba(51,204,255,0.2)] border border-white/5'
-                      : 'text-gray-300 hover:text-white hover:bg-white/5'
+                  `px-3 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${isActive
+                    ? 'text-primary-400 bg-white/10 shadow-[0_0_15px_rgba(51,204,255,0.2)] border border-white/5'
+                    : 'text-gray-300 hover:text-white hover:bg-white/5'
                   }`
                 }
               >
@@ -81,6 +90,21 @@ const Header = () => {
 
           {/* Right Section */}
           <div className="flex items-center gap-4">
+            {/* Wishlist */}
+            {isAuthenticated && (
+              <Link
+                to="/wishlist"
+                className="relative p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                <Heart className="w-6 h-6" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center bg-red-500 text-white text-xs font-bold rounded-full shadow-[0_0_10px_rgba(239,68,68,0.5)]">
+                    {wishlistCount > 99 ? '99+' : wishlistCount}
+                  </span>
+                )}
+              </Link>
+            )}
+
             {/* Cart */}
             <Link
               to="/cart"
@@ -187,10 +211,9 @@ const Header = () => {
                 to="/products"
                 onClick={() => setIsMenuOpen(false)}
                 className={({ isActive }) =>
-                  `px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
-                    isActive
-                      ? 'text-primary-400 bg-white/10 border border-white/5'
-                      : 'text-gray-300 hover:text-white bg-white/5 hover:bg-white/10'
+                  `px-4 py-3 text-sm font-medium rounded-lg transition-colors ${isActive
+                    ? 'text-primary-400 bg-white/10 border border-white/5'
+                    : 'text-gray-300 hover:text-white bg-white/5 hover:bg-white/10'
                   }`
                 }
               >
@@ -202,10 +225,9 @@ const Header = () => {
                   to={`/category/${cat.slug}`}
                   onClick={() => setIsMenuOpen(false)}
                   className={({ isActive }) =>
-                    `px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
-                      isActive
-                        ? 'text-primary-400 bg-white/10 border border-white/5'
-                        : 'text-gray-300 hover:text-white bg-white/5 hover:bg-white/10'
+                    `px-4 py-3 text-sm font-medium rounded-lg transition-colors ${isActive
+                      ? 'text-primary-400 bg-white/10 border border-white/5'
+                      : 'text-gray-300 hover:text-white bg-white/5 hover:bg-white/10'
                     }`
                   }
                 >
