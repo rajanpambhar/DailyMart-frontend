@@ -4,3 +4,4 @@ export { default as productsApi } from './productsApi';
 export { default as categoriesApi } from './categoriesApi';
 export { default as ordersApi } from './ordersApi';
 export { default as wishlistApi } from './wishlistApi';
+export { default as reviewsApi } from './reviewsApi';

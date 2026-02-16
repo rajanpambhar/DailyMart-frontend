@@ -10,6 +10,7 @@ import { Product } from '../types';
 import { useCartStore } from '../stores/cartStore';
 import { useWishlistStore } from '../stores/wishlistStore';
 import { useAuthStore } from '../stores/authStore';
+import ReviewSection from '../components/product/ReviewSection';
 
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -302,7 +303,11 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
-    </div>
+
+      <div className="mt-16">
+        <ReviewSection productId={product.id} />
+      </div>
+    </div >
   );
 };
 
