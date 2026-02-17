@@ -16,22 +16,30 @@ import { PaymentMethod } from '../types';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '../stores/authStore';
 import CouponInput from '../components/cart/CouponInput';
+import { useRazorpay } from '../hooks/useRazorpay';
 
 const checkoutSchema = z.object({
   shippingName: z.string().min(1, 'Please enter your full name'),
   shippingPhone: z.string().min(10, 'Please enter a valid phone number'),
   shippingAddress: z.string().min(10, 'Please enter your complete address'),
-  paymentMethod: z.enum(['CREDIT_CARD', 'DEBIT_CARD', 'NET_BANKING', 'UPI', 'COD']),
+  paymentMethod: z.enum(['RAZORPAY', 'COD']),
 });
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
 const paymentMethods = [
-  { value: 'CREDIT_CARD', label: 'Credit Card', icon: CreditCard },
-  { value: 'DEBIT_CARD', label: 'Debit Card', icon: CreditCard },
-  { value: 'NET_BANKING', label: 'Net Banking', icon: Building },
-  { value: 'UPI', label: 'UPI', icon: Smartphone },
-  { value: 'COD', label: 'Cash on Delivery', icon: Wallet },
+  {
+    value: 'RAZORPAY',
+    label: 'Pay Online',
+    icon: CreditCard,
+    description: 'Credit/Debit Card, UPI, Net Banking'
+  },
+  {
+    value: 'COD',
+    label: 'Cash on Delivery',
+    icon: Wallet,
+    description: 'Pay when you receive'
+  },
 ];
 
 const CheckoutPage = () => {
@@ -44,6 +52,7 @@ const CheckoutPage = () => {
 
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string>('new');
+  const { isLoaded: isRazorpayLoaded, initiatePayment } = useRazorpay();
 
   useEffect(() => {
     if (user) {
@@ -117,6 +126,7 @@ const CheckoutPage = () => {
   const onSubmit = async (data: CheckoutFormData) => {
     setIsLoading(true);
     try {
+      // Create order first
       const order = await ordersApi.createOrder({
         items: items.map((item) => ({
           productId: item.productId,
@@ -129,14 +139,41 @@ const CheckoutPage = () => {
         couponCode: coupon?.code,
       });
 
-      setOrderId(order.id);
-      clearCart();
-      setOrderSuccess(true);
-      toast.success('Order placed successfully!');
+      // If COD, complete the order immediately
+      if (data.paymentMethod === 'COD') {
+        setOrderId(order.id);
+        clearCart();
+        setOrderSuccess(true);
+        toast.success('Order placed successfully!');
+        setIsLoading(false);
+        return;
+      }
+
+      // For online payments, initiate Razorpay
+      initiatePayment(
+        order.finalAmount,
+        order.id,
+        {
+          name: data.shippingName,
+          email: user?.email,
+          phone: data.shippingPhone,
+        },
+        () => {
+          // Payment successful
+          setOrderId(order.id);
+          clearCart();
+          setOrderSuccess(true);
+          setIsLoading(false);
+        },
+        () => {
+          // Payment failed or cancelled
+          setIsLoading(false);
+          toast.error('Payment was not completed. Your order is saved as pending.');
+        }
+      );
     } catch (error: any) {
       const message = error.response?.data?.message || 'Failed to place order. Please try again.';
       toast.error(message);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -259,26 +296,29 @@ const CheckoutPage = () => {
                 Payment Method
               </h2>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {paymentMethods.map((method) => (
                   <button
                     key={method.value}
                     type="button"
                     onClick={() => setValue('paymentMethod', method.value as any)}
-                    className={`p-4 rounded-lg border-2 transition-all ${selectedPayment === method.value
+                    className={`p-6 rounded-lg border-2 transition-all ${selectedPayment === method.value
                       ? 'border-primary-500 bg-primary-500/10'
                       : 'border-dark-500 bg-dark-600 hover:border-dark-400'
                       }`}
                   >
                     <method.icon
-                      className={`w-6 h-6 mb-2 mx-auto ${selectedPayment === method.value ? 'text-primary-500' : 'text-gray-400'
+                      className={`w-8 h-8 mb-3 mx-auto ${selectedPayment === method.value ? 'text-primary-500' : 'text-gray-400'
                         }`}
                     />
                     <p
-                      className={`text-sm font-medium ${selectedPayment === method.value ? 'text-white' : 'text-gray-400'
+                      className={`text-base font-semibold mb-1 ${selectedPayment === method.value ? 'text-white' : 'text-gray-400'
                         }`}
                     >
                       {method.label}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {method.description}
                     </p>
                   </button>
                 ))}

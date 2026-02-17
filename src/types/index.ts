@@ -94,7 +94,7 @@ export interface CartItem {
 }
 
 // Order Types
-export type PaymentMethod = 'CREDIT_CARD' | 'DEBIT_CARD' | 'NET_BANKING' | 'UPI' | 'COD';
+export type PaymentMethod = 'RAZORPAY' | 'CREDIT_CARD' | 'DEBIT_CARD' | 'NET_BANKING' | 'UPI' | 'COD';
 export type PaymentStatus = 'PENDING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
 export type DeliveryStatus = 'PENDING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
 
@@ -115,12 +115,19 @@ export interface Order {
   userId: string;
   orderDate: string;
   totalAmount: number;
+  discountAmount: number;
+  finalAmount: number;
+  couponCode?: string;
   paymentMethod: PaymentMethod;
   paymentStatus: PaymentStatus;
   shippingName: string;
   shippingAddress: string;
   shippingPhone: string;
   deliveryStatus: DeliveryStatus;
+  // Razorpay payment fields
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
+  razorpaySignature?: string;
   createdAt?: string;
   user?: {
     id: string;
