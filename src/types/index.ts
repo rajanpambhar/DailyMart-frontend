@@ -136,6 +136,8 @@ export interface CreateOrderData {
   shippingName: string;
   shippingAddress: string;
   shippingPhone: string;
+  couponCode?: string;
+  discountAmount?: number;
 }
 
 export interface OrderQueryParams {

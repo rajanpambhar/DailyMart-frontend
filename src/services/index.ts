@@ -6,3 +6,4 @@ export { default as ordersApi } from './ordersApi';
 export { default as wishlistApi } from './wishlistApi';
 export { default as reviewsApi } from './reviewsApi';
 export { default as addressesApi } from './addressesApi';
+export { default as couponsApi } from './couponsApi';

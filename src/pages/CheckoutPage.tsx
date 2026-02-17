@@ -15,6 +15,7 @@ import type { Address } from '../services/addressesApi';
 import { PaymentMethod } from '../types';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '../stores/authStore';
+import CouponInput from '../components/cart/CouponInput';
 
 const checkoutSchema = z.object({
   shippingName: z.string().min(1, 'Please enter your full name'),
@@ -37,7 +38,7 @@ const CheckoutPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
-  const { items, totalPrice, clearCart } = useCartStore();
+  const { items, totalPrice, clearCart, coupon, discountAmount, finalPrice } = useCartStore();
   const { user } = useAuthStore();
   const navigate = useNavigate();
 
@@ -90,6 +91,8 @@ const CheckoutPage = () => {
   };
 
   const total = totalPrice();
+  const discount = discountAmount();
+  const final = finalPrice();
 
   const {
     register,
@@ -123,6 +126,7 @@ const CheckoutPage = () => {
         shippingName: data.shippingName,
         shippingAddress: data.shippingAddress,
         shippingPhone: data.shippingPhone,
+        couponCode: coupon?.code,
       });
 
       setOrderId(order.id);
@@ -177,23 +181,25 @@ const CheckoutPage = () => {
                 Shipping Details
               </h2>
 
-              {addresses.length > 0 && (
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-400 mb-2">Select from Address Book</label>
-                  <select
-                    value={selectedAddressId}
-                    onChange={handleAddressSelection}
-                    className="input-field w-full"
-                  >
-                    {addresses.map(addr => (
-                      <option key={addr.id} value={addr.id}>
-                        {addr.type} - {addr.fullName}, {addr.city}
-                      </option>
-                    ))}
-                    <option value="new">+ Add New Address</option>
-                  </select>
-                </div>
-              )}
+              {
+                addresses.length > 0 && (
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-400 mb-2">Select from Address Book</label>
+                    <select
+                      value={selectedAddressId}
+                      onChange={handleAddressSelection}
+                      className="input-field w-full"
+                    >
+                      {addresses.map(addr => (
+                        <option key={addr.id} value={addr.id}>
+                          {addr.type} - {addr.fullName}, {addr.city}
+                        </option>
+                      ))}
+                      <option value="new">+ Add New Address</option>
+                    </select>
+                  </div>
+                )
+              }
 
               <div className="space-y-4">
                 <div>
@@ -244,10 +250,10 @@ const CheckoutPage = () => {
                   )}
                 </div>
               </div>
-            </div>
+            </div >
 
             {/* Payment Method */}
-            <div className="glass-card p-6">
+            < div className="glass-card p-6" >
               <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
                 <CreditCard className="w-5 h-5 text-primary-500" />
                 Payment Method
@@ -277,14 +283,16 @@ const CheckoutPage = () => {
                   </button>
                 ))}
               </div>
-              {errors.paymentMethod && (
-                <p className="form-error mt-2">{errors.paymentMethod.message}</p>
-              )}
-            </div>
-          </div>
+              {
+                errors.paymentMethod && (
+                  <p className="form-error mt-2">{errors.paymentMethod.message}</p>
+                )
+              }
+            </div >
+          </div >
 
           {/* Order Summary */}
-          <div className="lg:col-span-1">
+          < div className="lg:col-span-1" >
             <div className="glass-card p-6 sticky top-24">
               <h2 className="text-xl font-bold text-white mb-6">Order Summary</h2>
 
@@ -303,10 +311,20 @@ const CheckoutPage = () => {
               </div>
 
               <div className="border-t border-dark-500 pt-4 space-y-3 mb-6">
-                <div className="flex justify-between text-gray-400">
+                <CouponInput />
+
+                <div className="flex justify-between text-gray-400 pt-2">
                   <span>Subtotal</span>
                   <span className="text-white">₹{total.toFixed(2)}</span>
                 </div>
+
+                {discount > 0 && (
+                  <div className="flex justify-between text-primary-400">
+                    <span>Discount</span>
+                    <span>-₹{discount.toFixed(2)}</span>
+                  </div>
+                )}
+
                 <div className="flex justify-between text-gray-400">
                   <span>Shipping</span>
                   <span className="text-green-400">Free</span>
@@ -314,7 +332,7 @@ const CheckoutPage = () => {
                 <div className="flex justify-between pt-3 border-t border-dark-500">
                   <span className="text-lg font-semibold text-white">Total</span>
                   <span className="text-lg font-bold text-primary-500">
-                    ₹{total.toFixed(2)}
+                    ₹{final.toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -340,10 +358,10 @@ const CheckoutPage = () => {
                 Back to Cart
               </Link>
             </div>
-          </div>
-        </div>
-      </form>
-    </div>
+          </div >
+        </div >
+      </form >
+    </div >
   );
 };
 

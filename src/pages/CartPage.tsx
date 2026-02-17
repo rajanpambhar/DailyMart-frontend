@@ -6,13 +6,16 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingCart, ArrowRight } from 'lucide-react';
 import { useCartStore } from '../stores/cartStore';
+import CouponInput from '../components/cart/CouponInput';
 
 const CartPage = () => {
-  const { items, totalItems, totalPrice, updateQuantity, removeItem, clearCart } = useCartStore();
+  const { items, totalItems, totalPrice, discountAmount, finalPrice, updateQuantity, removeItem, clearCart } = useCartStore();
   const navigate = useNavigate();
 
   const count = totalItems();
   const total = totalPrice();
+  const discount = discountAmount();
+  const final = finalPrice();
 
   if (items.length === 0) {
     return (
@@ -125,10 +128,20 @@ const CartPage = () => {
             <h2 className="text-xl font-bold text-white mb-6">Order Summary</h2>
 
             <div className="space-y-4 mb-6">
-              <div className="flex justify-between text-gray-400">
+              <CouponInput />
+
+              <div className="flex justify-between text-gray-400 pt-4 border-t border-dark-600">
                 <span>Subtotal</span>
                 <span className="text-white">₹{total.toFixed(2)}</span>
               </div>
+
+              {discount > 0 && (
+                <div className="flex justify-between text-primary-400">
+                  <span>Discount</span>
+                  <span>-₹{discount.toFixed(2)}</span>
+                </div>
+              )}
+
               <div className="flex justify-between text-gray-400">
                 <span>Shipping</span>
                 <span className="text-green-400">Free</span>
@@ -141,7 +154,7 @@ const CartPage = () => {
                 <div className="flex justify-between">
                   <span className="text-lg font-semibold text-white">Total</span>
                   <span className="text-lg font-bold text-primary-500">
-                    ₹{total.toFixed(2)}
+                    ₹{final.toFixed(2)}
                   </span>
                 </div>
               </div>
