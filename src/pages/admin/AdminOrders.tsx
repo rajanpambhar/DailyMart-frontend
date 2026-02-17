@@ -104,7 +104,7 @@ const AdminOrders = () => {
                       {new Date(order.orderDate).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 text-primary-500 font-medium">
-                      ₹{Number(order.totalAmount).toFixed(2)}
+                      ₹{Number(order.finalAmount).toFixed(2)}
                     </td>
                     <td className="px-6 py-4">
                       <select
@@ -155,11 +155,10 @@ const AdminOrders = () => {
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`px-3 py-1 rounded-lg transition-colors ${
-                  currentPage === page
+                className={`px-3 py-1 rounded-lg transition-colors ${currentPage === page
                     ? 'bg-primary-500 text-dark-900'
                     : 'text-gray-400 hover:text-white hover:bg-dark-600'
-                }`}
+                  }`}
               >
                 {page}
               </button>
@@ -218,11 +217,30 @@ const AdminOrders = () => {
                 </div>
               </div>
 
-              <div className="flex justify-between items-center pt-4 border-t border-dark-500">
-                <span className="font-semibold text-white">Total</span>
-                <span className="text-xl font-bold text-primary-500">
-                  ₹{Number(selectedOrder.totalAmount).toFixed(2)}
-                </span>
+              <div className="border-t border-dark-500 pt-4 space-y-2">
+                <div className="flex justify-between items-center text-gray-400">
+                  <span>Subtotal</span>
+                  <span className="font-semibold">₹{Number(selectedOrder.totalAmount).toFixed(2)}</span>
+                </div>
+                {selectedOrder.discountAmount > 0 && (
+                  <div className="flex justify-between items-center text-green-400">
+                    <span className="flex items-center gap-2">
+                      Discount
+                      {selectedOrder.couponCode && (
+                        <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded border border-green-500/30">
+                          {selectedOrder.couponCode}
+                        </span>
+                      )}
+                    </span>
+                    <span className="font-semibold">-₹{Number(selectedOrder.discountAmount).toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center pt-2 border-t border-dark-500">
+                  <span className="font-semibold text-white">Total</span>
+                  <span className="text-xl font-bold text-primary-500">
+                    ₹{Number(selectedOrder.finalAmount).toFixed(2)}
+                  </span>
+                </div>
               </div>
             </div>
           </div>

@@ -149,7 +149,6 @@ export const useCartStore = create<CartState>()(
 
       applyCoupon: (coupon) => {
         set({ coupon });
-        toast.success('Coupon applied successfully');
       },
 
       removeCoupon: () => {

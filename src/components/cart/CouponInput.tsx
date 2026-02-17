@@ -18,12 +18,8 @@ const CouponInput = () => {
         const fetchCoupons = async () => {
             setIsFetchingCoupons(true);
             try {
-                const coupons = await couponsApi.getAll();
-                // Filter only active and non-expired coupons
-                const validCoupons = coupons.filter(c =>
-                    c.isActive && new Date(c.expiry) > new Date()
-                );
-                setAvailableCoupons(validCoupons);
+                const coupons = await couponsApi.getActive();
+                setAvailableCoupons(coupons);
             } catch (error) {
                 console.error('Failed to fetch coupons:', error);
             } finally {

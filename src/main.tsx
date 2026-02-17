@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
+import { Toaster, ToastBar, toast } from 'react-hot-toast';
+import { X } from 'lucide-react';
 import App from './App';
 import './index.css';
 
@@ -12,7 +13,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <Toaster
         position="top-right"
         toastOptions={{
-          duration: 4000,
+          duration: 2000,
           style: {
             background: '#1e1e1e',
             color: '#fff',
@@ -31,7 +32,27 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             },
           },
         }}
-      />
+      >
+        {(t) => (
+          <ToastBar toast={t}>
+            {({ icon, message }) => (
+              <>
+                {icon}
+                <div style={{ flex: 1 }}>{message}</div>
+                {t.type !== 'loading' && (
+                  <button
+                    onClick={() => toast.dismiss(t.id)}
+                    className="p-1 rounded-full hover:bg-white/10 transition-colors ml-2"
+                    title="Dismiss"
+                  >
+                    <X size={14} className="text-gray-400 hover:text-white" />
+                  </button>
+                )}
+              </>
+            )}
+          </ToastBar>
+        )}
+      </Toaster>
     </BrowserRouter>
   </React.StrictMode>,
 );

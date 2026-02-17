@@ -20,6 +20,11 @@ const couponsApi = {
         return response.data;
     },
 
+    getActive: async (): Promise<Coupon[]> => {
+        const response = await api.get('/coupons/active');
+        return response.data;
+    },
+
     create: async (data: any): Promise<Coupon> => {
         const response = await api.post('/coupons', data);
         return response.data;

@@ -12,6 +12,7 @@ interface PrintOrderReceiptProps {
 
 const PrintOrderReceipt = ({ order }: PrintOrderReceiptProps) => {
     const subtotal = order.totalAmount;
+    const discount = order.discountAmount || 0;
     const tax = 0;
     const shipping = 0;
 
@@ -135,6 +136,19 @@ const PrintOrderReceipt = ({ order }: PrintOrderReceiptProps) => {
                         <span>Subtotal:</span>
                         <span>₹{Number(subtotal).toFixed(2)}</span>
                     </div>
+                    {discount > 0 && (
+                        <div className="flex justify-between text-green-600">
+                            <span className="flex items-center gap-2">
+                                Discount
+                                {order.couponCode && (
+                                    <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded border border-green-300">
+                                        {order.couponCode}
+                                    </span>
+                                )}
+                            </span>
+                            <span className="font-medium">-₹{Number(discount).toFixed(2)}</span>
+                        </div>
+                    )}
                     <div className="flex justify-between text-gray-700">
                         <span>Shipping:</span>
                         <span className="text-green-600 font-medium">FREE</span>
@@ -148,7 +162,7 @@ const PrintOrderReceipt = ({ order }: PrintOrderReceiptProps) => {
                     <div className="flex justify-between items-center">
                         <span className="text-lg font-bold text-gray-900">Total Amount:</span>
                         <span className="text-2xl font-bold text-gray-900">
-                            ₹{Number(order.totalAmount).toFixed(2)}
+                            ₹{Number(order.finalAmount).toFixed(2)}
                         </span>
                     </div>
                 </div>

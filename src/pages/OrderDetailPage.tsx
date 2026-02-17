@@ -98,6 +98,7 @@ const OrderDetailPage = () => {
 
   // Calculate order summary
   const subtotal = order.totalAmount;
+  const discount = order.discountAmount || 0;
   const tax = 0; // You can add tax calculation
 
   return (
@@ -234,6 +235,19 @@ const OrderDetailPage = () => {
                   <span>Subtotal</span>
                   <span className="font-semibold">₹{Number(subtotal).toFixed(2)}</span>
                 </div>
+                {discount > 0 && (
+                  <div className="flex justify-between items-center text-green-400">
+                    <span className="flex items-center gap-2">
+                      Discount
+                      {order.couponCode && (
+                        <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded border border-green-500/30">
+                          {order.couponCode}
+                        </span>
+                      )}
+                    </span>
+                    <span className="font-semibold">-₹{Number(discount).toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between items-center text-gray-400">
                   <span>Shipping</span>
                   <span className="font-semibold text-green-400">FREE</span>
@@ -246,7 +260,7 @@ const OrderDetailPage = () => {
                   <div className="flex justify-between items-center">
                     <span className="text-lg font-bold text-white">Total Amount</span>
                     <span className="text-2xl font-bold text-gradient">
-                      ₹{Number(order.totalAmount).toFixed(2)}
+                      ₹{Number(order.finalAmount).toFixed(2)}
                     </span>
                   </div>
                 </div>

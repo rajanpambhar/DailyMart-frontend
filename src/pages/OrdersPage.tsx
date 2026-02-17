@@ -118,7 +118,7 @@ const OrdersPage = () => {
                 {/* Total */}
                 <div className="text-right">
                   <p className="text-xs text-gray-400">Total</p>
-                  <p className="font-bold text-primary-500 text-lg">₹{Number(order.totalAmount).toFixed(2)}</p>
+                  <p className="font-bold text-primary-500 text-lg">₹{Number(order.finalAmount).toFixed(2)}</p>
                 </div>
 
                 {/* Payment Status */}
