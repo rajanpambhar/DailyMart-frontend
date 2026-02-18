@@ -13,10 +13,41 @@ interface AddressFormProps {
     onCancel: () => void;
 }
 
+const COUNTRY_CODES = [
+    { code: '+91', label: 'IN (+91)' },
+    { code: '+1', label: 'US (+1)' },
+    { code: '+44', label: 'UK (+44)' },
+    { code: '+81', label: 'JP (+81)' },
+    { code: '+86', label: 'CN (+86)' },
+    { code: '+971', label: 'UAE (+971)' },
+];
+
 const AddressForm = ({ initialData, onSuccess, onCancel }: AddressFormProps) => {
     const [submitting, setSubmitting] = useState(false);
+
+    // Determine initial country code and local phone number
+    const getInitialPhoneData = () => {
+        if (!initialData?.phone) return { code: '+91', number: '' };
+
+        const foundCode = COUNTRY_CODES.find(c => initialData.phone.startsWith(c.code));
+        if (foundCode) {
+            return {
+                code: foundCode.code,
+                number: initialData.phone.substring(foundCode.code.length)
+            };
+        }
+        // If no code found, assume it's a raw number and default to +91 (or handle differently)
+        return { code: '+91', number: initialData.phone };
+    };
+
+    const initialPhoneData = getInitialPhoneData();
+    const [countryCode, setCountryCode] = useState(initialPhoneData.code);
+
     const { register, handleSubmit, setValue, formState: { errors } } = useForm<AddressFormData>({
-        defaultValues: initialData || {
+        defaultValues: initialData ? {
+            ...initialData,
+            phone: initialPhoneData.number
+        } : {
             fullName: '',
             phone: '',
             type: 'Home',
@@ -32,11 +63,17 @@ const AddressForm = ({ initialData, onSuccess, onCancel }: AddressFormProps) => 
     const onSubmit = async (data: AddressFormData) => {
         setSubmitting(true);
         try {
+            // Combine country code and phone number
+            const finalData = {
+                ...data,
+                phone: `${countryCode}${data.phone}`
+            };
+
             if (initialData?.id) {
-                await addressesApi.updateAddress(initialData.id, data);
+                await addressesApi.updateAddress(initialData.id, finalData);
                 toast.success('Address updated successfully');
             } else {
-                await addressesApi.createAddress(data);
+                await addressesApi.createAddress(finalData);
                 toast.success('Address added successfully');
             }
             onSuccess();
@@ -85,11 +122,24 @@ const AddressForm = ({ initialData, onSuccess, onCancel }: AddressFormProps) => 
 
                 <div>
                     <label className="block text-sm font-medium text-gray-400 mb-1">Phone Number</label>
-                    <input
-                        {...register('phone', { required: 'Phone is required', pattern: { value: /^\d{10}$/, message: 'Invalid phone number' } })}
-                        className="input-field w-full"
-                        placeholder="9876543210"
-                    />
+                    <div className="flex gap-2">
+                        <select
+                            value={countryCode}
+                            onChange={(e) => setCountryCode(e.target.value)}
+                            className="input-field w-24 px-2"
+                        >
+                            {COUNTRY_CODES.map((country) => (
+                                <option key={country.code} value={country.code}>
+                                    {country.label}
+                                </option>
+                            ))}
+                        </select>
+                        <input
+                            {...register('phone', { required: 'Phone is required', pattern: { value: /^\d{10}$/, message: 'Invalid phone number' } })}
+                            className="input-field flex-1"
+                            placeholder="9876543210"
+                        />
+                    </div>
                     {errors.phone && <p className="form-error">{errors.phone.message}</p>}
                 </div>
 
