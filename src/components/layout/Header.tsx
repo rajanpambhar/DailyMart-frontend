@@ -93,9 +93,9 @@ const Header = () => {
               </div>
               <div className="text-left">
                 <p className="text-xs text-gray-400 font-medium">Delivering to</p>
-                <p className="text-sm text-white font-bold flex items-center gap-1 max-w-[150px] truncate">
-                  {currentAddress ? `${currentAddress.city} ${currentAddress.zipCode}` : 'Select Location'}
-                  <ChevronDown className="w-3 h-3 text-gray-500" />
+                <p className="text-sm text-white font-bold flex items-center gap-1 max-w-[200px] truncate">
+                  {currentAddress ? `${currentAddress.street}, ${currentAddress.city}` : 'Select Location'}
+                  <ChevronDown className="w-3 h-3 text-gray-500 flex-shrink-0" />
                 </p>
               </div>
             </button>
@@ -103,7 +103,7 @@ const Header = () => {
             {isLocationOpen && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setIsLocationOpen(false)} />
-                <div className="absolute top-full left-0 mt-2 w-72 bg-dark-800 border border-dark-600 rounded-xl shadow-2xl z-20 overflow-hidden animate-slide-down">
+                <div className="absolute top-full left-0 mt-2 w-80 bg-dark-800 border border-dark-600 rounded-xl shadow-2xl z-20 overflow-hidden animate-slide-down">
                   <div className="p-4 border-b border-dark-600 bg-dark-700/50">
                     <h3 className="text-white font-semibold flex items-center gap-2">
                       <MapPin className="w-4 h-4 text-primary-500" />
@@ -111,7 +111,7 @@ const Header = () => {
                     </h3>
                     <p className="text-xs text-gray-400 mt-1">Select a delivery address</p>
                   </div>
-                  <div className="max-h-[300px] overflow-y-auto p-2 space-y-2 scroller">
+                  <div className="max-h-[200px] overflow-y-auto p-2 space-y-2 custom-scrollbar">
                     {!isAuthenticated ? (
                       <div className="text-center py-6 px-4">
                         <p className="text-sm text-gray-300 mb-4">Please login to see your saved addresses.</p>
