@@ -1,6 +1,6 @@
 # DailyMart Frontend
 
-Modern React + TypeScript frontend migrated from PHP to a modern SPA architecture.
+Modern React + TypeScript frontend 
 
 ## 🚀 Tech Stack
 
@@ -62,55 +62,6 @@ npm install
 npm run dev
 ```
 
-The app will be available at `http://localhost:5173`
-
-## 📄 Pages
-
-### Public Pages
-- `/` - Home page with hero and best sellers
-- `/category/:slug` - Category product listing
-- `/product/:id` - Product detail page
-
-### Auth Pages (Guest only)
-- `/login` - User login
-- `/signup` - User registration
-- `/forgot-password` - Password recovery
-
-### Protected Pages (Login required)
-- `/cart` - Shopping cart
-- `/checkout` - Checkout process
-- `/profile` - User profile
-- `/orders` - Order history
-- `/orders/:id` - Order details
-
-### Admin Pages (Admin role required)
-- `/admin` - Admin dashboard
-- `/admin/products` - Product management
-- `/admin/categories` - Category management
-- `/admin/orders` - Order management
-- `/admin/users` - User management
-
-## 🎨 Styling
-
-The project uses Tailwind CSS with a custom dark theme. Key features:
-- **Dark mode by default**
-- **Custom color palette** (primary cyan, secondary green)
-- **Glassmorphism effects**
-- **Micro-animations**
-- **Responsive design**
-
-### Custom Components
-
-```css
-.btn-primary     /* Primary action buttons */
-.btn-secondary   /* Secondary buttons */
-.btn-ghost       /* Ghost/text buttons */
-.glass-card      /* Glassmorphism cards */
-.input-field     /* Form inputs */
-.badge           /* Status badges */
-.product-card    /* Product display cards */
-```
-
 ## 🔐 Authentication
 
 The app uses JWT authentication with:
@@ -119,23 +70,6 @@ The app uses JWT authentication with:
 - Auto token refresh on 401 responses
 - Protected route components
 
-## 📝 Migration from PHP
-
-| PHP Component | React Equivalent |
-|---------------|------------------|
-| header.php | Header.tsx |
-| footer.php | Footer.tsx |
-| login.php | LoginPage.tsx |
-| signup.php | SignupPage.tsx |
-| profile.php | ProfilePage.tsx |
-| cart.php | CartPage.tsx |
-| checkout.php | CheckoutPage.tsx |
-| vegetables.php | CategoryPage.tsx |
-| admin_index.php | AdminDashboard.tsx |
-| admin_products.php | AdminProducts.tsx |
-| admin_orders.php | AdminOrders.tsx |
-| admin_users.php | AdminUsers.tsx |
-| $_SESSION | Zustand stores |
 
 ## 🛠️ Environment Variables
 
