@@ -211,29 +211,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Promo Banner - Glass Overlay */}
-      <section className="py-16">
-        <div className="container">
-          <div className="relative rounded-3xl overflow-hidden p-1 bg-gradient-to-r from-primary-500/30 via-dark-800 to-secondary-500/30">
-            <div className="bg-black/40 backdrop-blur-2xl rounded-[22px] p-8 md:p-16 text-center relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
-              
-              <div className="relative z-10">
-                <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-                  Weekly Special Offer
-                </h2>
-                <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
-                  Get premium quality products at unbeatable prices. Limited time offer on selected categories.
-                </p>
-                <Link to="/promotions" className="btn-primary px-10 py-4 text-lg shadow-[0_0_50px_rgba(51,204,255,0.4)]">
-                  Claim Offer
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Features Section */}
       <section className="py-20">
         <div className="container">
