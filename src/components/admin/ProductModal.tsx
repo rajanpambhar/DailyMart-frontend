@@ -3,10 +3,11 @@
 // =====================================================
 
 import { useEffect, useState } from 'react';
-import { X, Loader2 } from 'lucide-react';
+import { X, Loader2, Upload } from 'lucide-react';
 import { Product, Category } from '../../types';
 import { categoriesApi } from '../../services';
 import toast from 'react-hot-toast';
+import { compressImage, isImageFile, formatFileSize } from '../../utils/imageCompression';
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -21,6 +22,8 @@ const ProductModal = ({ isOpen, onClose, onSubmit, initialData, title }: Product
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [compressing, setCompressing] = useState(false);
+  const [originalFileSize, setOriginalFileSize] = useState<number>(0);
   
   // Form state
   // We use strings for numeric fields to allow empty state and prevent leading zeros
@@ -102,6 +105,54 @@ const ProductModal = ({ isOpen, onClose, onSubmit, initialData, title }: Product
 
   const handleCheckboxChange = (name: string, checked: boolean) => {
     setFormData(prev => ({ ...prev, [name]: checked }));
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
+
+    // Validate file type
+    if (!isImageFile(selectedFile)) {
+      toast.error('Please select a valid image file (JPEG, PNG, WebP, etc.)');
+      e.target.value = ''; // Reset input
+      return;
+    }
+
+    // Check file size (warn if > 5MB)
+    const fileSizeMB = selectedFile.size / (1024 * 1024);
+    setOriginalFileSize(selectedFile.size);
+
+    if (fileSizeMB > 10) {
+      toast.error('Image file is too large. Please select an image smaller than 10MB.');
+      e.target.value = ''; // Reset input
+      return;
+    }
+
+    // Compress image if needed
+    if (fileSizeMB > 0.5) {
+      setCompressing(true);
+      toast.loading('Compressing image...', { id: 'compress' });
+      
+      try {
+        const compressedFile = await compressImage(selectedFile, 1, 1920, 0.8);
+        const compressedSizeMB = compressedFile.size / (1024 * 1024);
+        
+        setFile(compressedFile);
+        toast.success(
+          `Image compressed: ${formatFileSize(selectedFile.size)} → ${formatFileSize(compressedFile.size)}`,
+          { id: 'compress', duration: 3000 }
+        );
+      } catch (error) {
+        console.error('Compression failed:', error);
+        toast.error('Failed to compress image. Using original.', { id: 'compress' });
+        setFile(selectedFile);
+      } finally {
+        setCompressing(false);
+      }
+    } else {
+      setFile(selectedFile);
+      toast.success('Image selected successfully');
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -236,26 +287,47 @@ const ProductModal = ({ isOpen, onClose, onSubmit, initialData, title }: Product
           {/* Image Upload */}
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-1">Product Image</label>
-            <div className="flex flex-col gap-2">
-              {formData.image && !file && (
-                <div className="relative w-20 h-20 bg-dark-700 rounded-lg overflow-hidden border border-dark-600">
+            <div className="flex flex-col gap-3">
+              {/* Current/Selected Image Preview */}
+              {(formData.image || file) && (
+                <div className="relative w-24 h-24 bg-dark-700 rounded-lg overflow-hidden border-2 border-dark-600">
                   <img 
-                    src={formData.image} 
-                    alt="Current" 
+                    src={file ? URL.createObjectURL(file) : formData.image} 
+                    alt="Preview" 
                     className="w-full h-full object-contain"
                   />
+                  {file && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-xs px-1 py-0.5 text-center">
+                      {formatFileSize(file.size)}
+                    </div>
+                  )}
                 </div>
               )}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    setFile(e.target.files[0]);
-                  }
-                }}
-                className="input-field w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dark-600 file:text-white hover:file:bg-dark-500"
-              />
+              
+              {/* File Input */}
+              <div className="relative">
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/jpg"
+                  onChange={handleFileChange}
+                  disabled={compressing || loading}
+                  className="input-field w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-dark-600 file:text-white hover:file:bg-dark-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  id="image-upload"
+                />
+                {compressing && (
+                  <div className="absolute inset-0 bg-dark-800/80 rounded-lg flex items-center justify-center">
+                    <Loader2 className="w-5 h-5 animate-spin text-primary-500" />
+                  </div>
+                )}
+              </div>
+              
+              {/* Info Text */}
+              <p className="text-xs text-gray-500">
+                Accepted formats: JPEG, PNG, WebP • Max size: 10MB
+                {file && originalFileSize > file.size && (
+                  <span className="text-green-500"> • Compressed</span>
+                )}
+              </p>
             </div>
           </div>
 

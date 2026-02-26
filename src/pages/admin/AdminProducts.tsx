@@ -103,9 +103,17 @@ const AdminProducts = () => {
       }
       setIsModalOpen(false);
       fetchProducts();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast.error(selectedProduct ? 'Failed to update product' : 'Failed to create product');
+      
+      // Handle specific error cases
+      if (error?.response?.status === 413) {
+        toast.error('Image file is too large. Please select a smaller image.');
+      } else if (error?.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(selectedProduct ? 'Failed to update product' : 'Failed to create product');
+      }
       throw error; 
     }
   };
